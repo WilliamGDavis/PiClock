@@ -1,0 +1,1 @@
+C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\PiClock.csproj;arm
