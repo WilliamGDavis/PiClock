@@ -9,7 +9,7 @@
     <SolutionConfiguration>Debug|x64</SolutionConfiguration>
     <PackageArchitecture>x64</PackageArchitecture>
     <PackageIdentityName>70a847e4-1a18-4e59-ac6c-a4035284a40a</PackageIdentityName>
-    <IntermediateOutputPath>C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\</IntermediateOutputPath>
     <RegisteredManifestChecksum>E9C511F5E92DF6C4ED6EB1C5D0443BDBB34532C103D7A68126C92E022235B9A2</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>70a847e4-1a18-4e59-ac6c-a4035284a40a_1.0.0.0_x64__ckpvgz13cfhxc</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>70a847e4-1a18-4e59-ac6c-a4035284a40a_ckpvgz13cfhxc!App</RegisteredUserModeAppID>
@@ -19,16 +19,16 @@
     <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\Core\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-05-13T18:31:18.866</Modified>
+      <Modified>2016-05-13T21:07:32.012</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\PiClock.exe">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.exe">
       <PackagePath>entrypoint\PiClock.exe</PackagePath>
-      <Modified>2016-05-13T18:31:18.497</Modified>
+      <Modified>2016-05-13T21:07:31.692</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\.nuget\packages\Microsoft.ApplicationInsights\1.0.0\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.dll">
       <PackagePath>Microsoft.ApplicationInsights.dll</PackagePath>
@@ -454,53 +454,53 @@
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
       <Modified>2016-03-26T02:21:29.427</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\Downloads\Json80r3\Bin\Portable\Newtonsoft.Json.dll">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Newtonsoft.Json.dll">
       <PackagePath>Newtonsoft.Json.dll</PackagePath>
       <Modified>2016-03-15T01:29:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\ApplicationInsights.config">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\ApplicationInsights.config">
       <PackagePath>ApplicationInsights.config</PackagePath>
       <Modified>2016-03-28T22:44:47.205</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Properties\Default.rd.xml">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
       <Modified>2016-03-28T22:44:39.446</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-10-11T01:09:42.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\PiClock.xr.xml">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.xr.xml">
       <PackagePath>PiClock.xr.xml</PackagePath>
       <Modified>2016-05-12T21:15:55.338</Modified>
     </AppxPackagedFile>
@@ -508,13 +508,13 @@
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
       <Modified>2016-03-26T02:11:09.960</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\resources.pri">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-05-12T21:15:56.442</Modified>
+      <Modified>2016-05-13T21:04:43.472</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\Core\PiClock.exe">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\PiClock.exe">
       <PackagePath>PiClock.exe</PackagePath>
-      <Modified>2016-05-13T18:31:18.863</Modified>
+      <Modified>2016-05-13T21:07:32.011</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

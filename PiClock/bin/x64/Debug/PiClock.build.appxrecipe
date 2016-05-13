@@ -9,16 +9,16 @@
     <SolutionConfiguration>Debug|x64</SolutionConfiguration>
     <PackageArchitecture>x64</PackageArchitecture>
     <PackageIdentityName>70a847e4-1a18-4e59-ac6c-a4035284a40a</PackageIdentityName>
-    <IntermediateOutputPath>C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\Core\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\PiClock.exe">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.exe">
       <PackagePath>entrypoint\PiClock.exe</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\.nuget\packages\Microsoft.ApplicationInsights\1.0.0\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.dll">
@@ -339,52 +339,52 @@
     <AppxPackagedFile Include="C:\Users\Owner\.nuget\packages\System.Xml.XmlSerializer\4.0.10\lib\netcore50\System.Xml.XmlSerializer.dll">
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\Downloads\Json80r3\Bin\Portable\Newtonsoft.Json.dll">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Newtonsoft.Json.dll">
       <PackagePath>Newtonsoft.Json.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\ApplicationInsights.config">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\ApplicationInsights.config">
       <PackagePath>ApplicationInsights.config</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Properties\Default.rd.xml">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\PiClock.xr.xml">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.xr.xml">
       <PackagePath>PiClock.xr.xml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\resources.pri">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Debug\Core\PiClock.exe">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\PiClock.exe">
       <PackagePath>PiClock.exe</PackagePath>
     </AppxPackagedFile>
   </ItemGroup>

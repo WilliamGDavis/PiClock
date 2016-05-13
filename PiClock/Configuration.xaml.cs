@@ -18,6 +18,7 @@ namespace PiClock
             Settings settings = new Settings();
             settings.ReadAllSettings();
 
+            //TODO: Validate for null values
             textBox_PinLength.Text = settings.PinLength;
             textBox_ApiServerAddress.Text = settings.ApiServerAddress;
             textBox_ApiServerPort.Text = settings.ApiServerPort;
