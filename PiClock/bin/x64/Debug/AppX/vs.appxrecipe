@@ -22,13 +22,13 @@
     <AppXManifest Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-05-13T21:07:32.012</Modified>
+      <Modified>2016-05-14T19:30:29.011</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.exe">
       <PackagePath>entrypoint\PiClock.exe</PackagePath>
-      <Modified>2016-05-13T21:07:31.692</Modified>
+      <Modified>2016-05-14T19:30:28.654</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\.nuget\packages\Microsoft.ApplicationInsights\1.0.0\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.dll">
       <PackagePath>Microsoft.ApplicationInsights.dll</PackagePath>
@@ -514,7 +514,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\PiClock.exe">
       <PackagePath>PiClock.exe</PackagePath>
-      <Modified>2016-05-13T21:07:32.011</Modified>
+      <Modified>2016-05-14T19:30:29.010</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

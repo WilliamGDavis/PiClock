@@ -1,7 +1,5 @@
 ﻿using PiClock.classes;
 using System;
-using System.Collections.Generic;
-using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -18,11 +16,11 @@ namespace PiClock
             Settings settings = new Settings();
             settings.ReadAllSettings();
 
-            //TODO: Validate for null values
-            textBox_PinLength.Text = settings.PinLength;
-            textBox_ApiServerAddress.Text = settings.ApiServerAddress;
-            textBox_ApiServerPort.Text = settings.ApiServerPort;
-            textBox_ApiDirectory.Text = settings.ApiDirectory;
+            //Validate for null settings values and fill in the appropriate textboxes
+            textBox_PinLength.Text = CheckForNullSetting(settings.PinLength);
+            textBox_ApiServerAddress.Text = CheckForNullSetting(settings.ApiServerAddress);
+            textBox_ApiServerPort.Text = CheckForNullSetting(settings.ApiServerPort);
+            textBox_ApiDirectory.Text = CheckForNullSetting(settings.ApiDirectory);
         }
 
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
@@ -41,7 +39,9 @@ namespace PiClock
             textBlock_ConnectionStatus.Text = "Checking Connection...";
 
             //TODO: Check for valid values in the textboxes
-            string uriPrefix = String.Format("http://{0}:{1}{2}", textBox_ApiServerAddress.Text, textBox_ApiServerPort.Text, textBox_ApiDirectory.Text);
+            string uriPrefix = String.Format("http://{0}:{1}{2}", textBox_ApiServerAddress.Text, 
+                                                                  textBox_ApiServerPort.Text, 
+                                                                  textBox_ApiDirectory.Text);
 
             //Check for a vaild connection to the web service
             try
@@ -72,13 +72,17 @@ namespace PiClock
             settings.ApiServerAddress = textBox_ApiServerAddress.Text;
             settings.ApiServerPort = textBox_ApiServerPort.Text;
             settings.ApiDirectory = textBox_ApiDirectory.Text;
-            settings.UriPrefix = String.Format("http://{0}:{1}{2}", settings.ApiServerAddress, 
-                                                                    settings.ApiServerPort, 
+            settings.UriPrefix = String.Format("http://{0}:{1}{2}", settings.ApiServerAddress,
+                                                                    settings.ApiServerPort,
                                                                     settings.ApiDirectory);
 
             //Write the values to the settings location
             settings.WriteAllSettings();
         }
+
+        //Check to ensure a setting value is not null, and if it is return an empty string
+        private string CheckForNullSetting(string setting)
+        { return setting = (null != setting) ? setting : ""; }
     }
 
 

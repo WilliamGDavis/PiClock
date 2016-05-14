@@ -86,11 +86,17 @@ namespace PiClock
             { textBlock_Result.Text = ex.Message; }
         }
 
+        //Config Button (Temporary)
+        private void button_Config_Click(object sender, RoutedEventArgs e)
+        { Frame.Navigate(typeof(Configuration), null); }
+
         private void passwordBox_PIN_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            //TODO: Maybe consider checking validation first, and if all validation passes login.
+            //Right now, it does all that in a single method
             try
             { Check_PIN(); }
-            catch (Exception ex)
+            catch (Exception ex) //Never seems to get here
             { textBlock_Result.Text = ex.Message; }
         }
 
@@ -121,11 +127,10 @@ namespace PiClock
 
         private async void Check_PIN()
         {
-            Settings settings = new Settings();
             string PIN = passwordBox_PIN.Password;
 
-            //Check to ensure the PIN length is 4
-            if (PinLength != PIN.Length)
+            //Check to ensure the PIN length matches the configuration and is not 0 value
+            if (PinLength != PIN.Length && 0!= PinLength)
             {
                 if (PinLength <= PIN.Length)
                 { passwordBox_PIN.Password = ""; }
@@ -141,7 +146,7 @@ namespace PiClock
                     ParamDictionary.Add("action", "Pin_Login");
                     ParamDictionary.Add("pin", PIN);
                     wsCall.ParamDictionary = ParamDictionary;
-                    wsCall.Uri = settings.ReadSetting("UriPrefix");
+                    wsCall.Uri = UriPrefix;
 
                     HttpResponseMessage httpResponse = await wsCall.POST_JsonToWebApi();
 
@@ -174,11 +179,10 @@ namespace PiClock
             Settings settings = new Settings();
             settings.ReadAllSettings();
 
-            PinLength = Convert.ToInt16(settings.PinLength);
+            PinLength = settings.ConvertPinLengthToInt(settings.PinLength);
             UriPrefix = settings.UriPrefix;
         }
+        
 
-        private void button_Config_Click(object sender, RoutedEventArgs e)
-        { Frame.Navigate(typeof(Configuration), null); }
     }
 }

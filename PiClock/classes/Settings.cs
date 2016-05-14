@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Windows.Storage;
 
 namespace PiClock.classes
@@ -32,29 +33,49 @@ namespace PiClock.classes
             SettingsLocation.Values["UriPrefix"] = UriPrefix;
         }
 
+        //Read all the setting and pass them to this instance
+        //If the setting does not exist, it will set the field to a null value
+        public void ReadAllSettings()
+        {
+            PinLength = ValidateSetting("PinLength");
+            ApiServerAddress = ValidateSetting("ApiServerAddress");
+            ApiServerPort = ValidateSetting("ApiServerPort");
+            ApiDirectory = ValidateSetting("ApiDirectory");
+            UriPrefix = ValidateSetting("UriPrefix");
+        }
+
         //Write an individial value to settings
         //TODO: Validation
         public void WriteSetting(string key, string value)
         { SettingsLocation.Values[key] = value; }
 
-        //Read all the setting and pass them to this instance
-        public void ReadAllSettings()
-        {
-            PinLength = (string)SettingsLocation.Values["PinLength"];
-            ApiServerAddress = (string)SettingsLocation.Values["ApiServerAddress"];
-            ApiServerPort = (string)SettingsLocation.Values["ApiServerPort"];
-            ApiDirectory = (string)SettingsLocation.Values["ApiDirectory"];
-            UriPrefix = (string)SettingsLocation.Values["UriPrefix"];
-        }
-
         //Return an individual setting's value
-        //Expected result: string
+        //Expected result: string value of a setting, or a null if the setting doesn't exist
         public string ReadSetting(string key)
-        { return (string)SettingsLocation.Values[key]; }
+        { return ValidateSetting(key); }
 
         //Used to "Clear" out the settings file, and all of it's values.  USE CAREFULLY!
         //This will completely blank the file out
         public async static void EraseAllSettings()
         { await ApplicationData.Current.ClearAsync(ApplicationDataLocality.Local); }
+
+        //Read from the settings file and set the class fields
+        //If the setting does not exist, set the field to a null value
+        public string ValidateSetting(string setting)
+        {
+            return setting =
+                (null != SettingsLocation.Values[setting]) ?
+                (string)SettingsLocation.Values[setting] :
+                null;
+        }
+
+        //Try to parse the string value of PinLength to an int.  If it can't, return a 0 value
+        public int ConvertPinLengthToInt(string settingsPinLength)
+        {
+            int value = (Int32.TryParse(settingsPinLength, out value)) ?
+                    value :
+                    0;
+            return value;
+        }
     }
 }
