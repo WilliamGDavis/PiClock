@@ -119,7 +119,7 @@ namespace PiClock
         private static string Format_dt_Current(DateTime dt)
         {
             //Format the 'Main' current date/time into a friendly structure
-            string newString = dt.ToString("dddd MM-dd-yyyy");
+            string newString = dt.ToString("dddd MMMM dd, yyyy");
             newString += "\n";
             newString += dt.ToString("hh:mm:sstt");
             return newString;

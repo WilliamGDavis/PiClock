@@ -50,7 +50,7 @@ namespace PiClock
                 DbFunctions dbConn = new DbFunctions();
                 dbConn.Uri = string.Format("{0}action=test_connection", uriPrefix);
 
-                //Check the connection.  
+                //Check the db connection.  
                 //Expected result: "true" or "false"
                 string connectionStatus = await dbConn.CheckDBConnection();
 

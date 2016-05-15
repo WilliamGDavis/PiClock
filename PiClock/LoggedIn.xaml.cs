@@ -5,6 +5,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.Storage;
 using Newtonsoft.Json;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace PiClock
 {
@@ -83,6 +86,17 @@ namespace PiClock
         private void button_PunchIn_Click(object sender, RoutedEventArgs e)
         {
             this.loggedIn = false;
+            StringBuilder dateTimeString = new StringBuilder();
+            DateTime dt = DateTime.Now;
+            string currentDateTime = dt.ToString();
+            dateTimeString.Append("employeeId: " + employee.id.ToString());
+            dateTimeString.Append(" | ");
+            dateTimeString.Append("punchInTime: " + currentDateTime);
+            
+            string employeeId = employee.id.ToString();
+
+            textBlock_CurrentPunch.Text = dateTimeString.ToString();
+            
             button_PunchIn.Visibility = Visibility.Collapsed;
             button_PunchOut.Visibility = Visibility.Visible;
         }
@@ -90,6 +104,17 @@ namespace PiClock
         private void button_PunchOut_Click(object sender, RoutedEventArgs e)
         {
             this.loggedIn = false;
+            StringBuilder dateTimeString = new StringBuilder();
+            DateTime dt = DateTime.Now;
+            string currentDateTime = dt.ToString();
+            dateTimeString.Append("employeeId: " + employee.id.ToString());
+            dateTimeString.Append(" | ");
+            dateTimeString.Append("punchOutTime: " + currentDateTime);
+
+            string employeeId = employee.id.ToString();
+
+            textBlock_CurrentPunch.Text = dateTimeString.ToString();
+
             button_PunchIn.Visibility = Visibility.Visible;
             button_PunchOut.Visibility = Visibility.Collapsed;
         }
@@ -102,6 +127,27 @@ namespace PiClock
         private void button_ViewInfo_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private async void PunchIn()
+        {
+            Settings settings = new Settings();
+            Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
+            WebServiceCall wsCall = new WebServiceCall();
+            wsCall.Uri = settings.ValidateSetting("UriPrefix");
+            ParamDictionary.Add("action", "PunchIn");
+            ParamDictionary.Add("employeeId", employee.id.ToString());
+            ParamDictionary.Add("timestamp", null); //Timestamped automatically in MySql
+            ParamDictionary.Add("type", "in");
+            ParamDictionary.Add("open_status", "true");
+            wsCall.ParamDictionary = ParamDictionary;
+
+            await wsCall.POST_JsonToWebApi();
+        }
+
+        private async Task<string> PunchOut()
+        {
+            return null;
         }
     }
 }
