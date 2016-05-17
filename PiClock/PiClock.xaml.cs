@@ -36,25 +36,25 @@ namespace PiClock
 
         //Keypad Events
         private void btn_0_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_0.Content; }
+        { passwordBox_PIN.Password += btn_0.Content; }
         private void btn_1_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_1.Content; }
+        { passwordBox_PIN.Password += btn_1.Content; }
         private void btn_2_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_2.Content; }
+        { passwordBox_PIN.Password += btn_2.Content; }
         private void btn_3_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_3.Content; }
+        { passwordBox_PIN.Password += btn_3.Content; }
         private void btn_4_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_4.Content; }
+        { passwordBox_PIN.Password += btn_4.Content; }
         private void btn_5_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_5.Content; }
+        { passwordBox_PIN.Password += btn_5.Content; }
         private void btn_6_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_6.Content; }
+        { passwordBox_PIN.Password += btn_6.Content; }
         private void btn_7_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_7.Content; }
+        { passwordBox_PIN.Password += btn_7.Content; }
         private void btn_8_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_8.Content; }
+        { passwordBox_PIN.Password += btn_8.Content; }
         private void btn_9_Click(object sender, RoutedEventArgs e)
-        { this.passwordBox_PIN.Password += this.btn_9.Content; }
+        { passwordBox_PIN.Password += btn_9.Content; }
 
         private async void button_QuickPeek_Click(object sender, RoutedEventArgs e)
         {

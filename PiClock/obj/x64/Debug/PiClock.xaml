@@ -54,7 +54,7 @@
         </Grid>
         <Grid Grid.Column="1" Grid.Row="2">
             <Button x:ConnectionId='2' x:Name="button_QuickPeek" Width="120" Content="Quick Peek" HorizontalAlignment="center" Margin="0,0,0,10" VerticalAlignment="Bottom"                                Height="40"/>
-            <Button x:ConnectionId='3' x:Name="button_Config" Content="Config" HorizontalAlignment="Left" Margin="309,386,0,0" VerticalAlignment="Top"                            />
+            <Button x:ConnectionId='3' x:Name="button_Config" Content="Config" HorizontalAlignment="Left" Margin="309,386,0,0" VerticalAlignment="Top"                             Visibility="Collapsed"/>
         </Grid>
     </Grid>
 </Page>

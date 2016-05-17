@@ -15,11 +15,6 @@ namespace PiClock.classes
 
         public Settings()
         {
-            PinLength = null;
-            ApiServerAddress = null;
-            ApiServerPort = null;
-            ApiDirectory = null;
-            UriPrefix = null;
         }
 
         //Write the properties of this instance to the setting file
@@ -77,5 +72,12 @@ namespace PiClock.classes
                     0;
             return value;
         }
+    }
+
+    class SettingsFromDB
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

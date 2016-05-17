@@ -13,11 +13,7 @@ namespace PiClock.classes
         public Dictionary<string, string> ParamDictionary { get; set; }
 
         public WebServiceCall()
-        {
-            Uri = null;
-            Action = null;
-            ParamDictionary = null;
-        }
+        {}
 
         //Connect to a web service and retrieve the data (JSON format) using the GET verb
         public async Task<HttpResponseMessage> GET_JsonFromWebApi()
@@ -46,6 +42,29 @@ namespace PiClock.classes
                 using (HttpClient httpClient = new HttpClient())
                 {
                     using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(Uri)))
+                    {
+                        httpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
+                        httpResponse = await httpClient.SendAsync(httpRequest);
+                    }
+
+                    httpClient.Dispose();
+                }
+                return httpResponse;
+            }
+            else
+            { return null; }
+        }
+
+        //Check for a valid connection to the Web Service using the PUT verb
+        //NOT currently used in the application.  POST is being used to make updates
+        public async Task<HttpResponseMessage> PUT_JsonToWebApi()
+        {
+            HttpResponseMessage httpResponse = null;
+            if (null != Uri && null != ParamDictionary)
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Put, new Uri(Uri)))
                     {
                         httpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
                         httpResponse = await httpClient.SendAsync(httpRequest);

@@ -102,6 +102,7 @@
       <DependentUpon>ChangeJob.xaml</DependentUpon>
     </Compile>
     <Compile Include="classes\Employee.cs" />
+    <Compile Include="classes\Job.cs" />
     <Compile Include="classes\JsonMethods.cs" />
     <Compile Include="classes\Punch.cs" />
     <Compile Include="classes\Settings.cs" />

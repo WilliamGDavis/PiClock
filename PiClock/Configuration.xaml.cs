@@ -1,5 +1,10 @@
-﻿using PiClock.classes;
+﻿using Newtonsoft.Json;
+using PiClock.classes;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -7,6 +12,7 @@ namespace PiClock
 {
     public sealed partial class Configuration : Page
     {
+        
         public Configuration()
         { this.InitializeComponent(); }
 
@@ -24,13 +30,13 @@ namespace PiClock
         }
 
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
-        { Frame.Navigate(typeof(MainPage), null); }
+        { Frame.Navigate(typeof(Launcher), null); }
 
         private void button_SaveChanges_Click(object sender, RoutedEventArgs e)
         {
             //Write the settings to the local settings
             WriteSettings();
-            Frame.Navigate(typeof(MainPage), null);
+            Frame.Navigate(typeof(Launcher), null);
         }
 
         private async void button_TestConnection_Click(object sender, RoutedEventArgs e)
@@ -83,7 +89,40 @@ namespace PiClock
         //Check to ensure a setting value is not null, and if it is return an empty string
         private string CheckForNullSetting(string setting)
         { return setting = (null != setting) ? setting : ""; }
+
+        private async void button_UpdateSettings_Click(object sender, RoutedEventArgs e)
+        {
+            textBlock_AllSettings.Text = "Updating Settings from Database...";
+            Settings settings = new Settings();
+            Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
+            WebServiceCall wsCall = new WebServiceCall();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
+            wsCall.Uri = settings.ValidateSetting("UriPrefix");
+            ParamDictionary.Add("action", "RetrieveSettings");
+            wsCall.ParamDictionary = ParamDictionary;
+
+            httpResponse = await wsCall.POST_JsonToWebApi();
+            textBlock_AllSettings.Text = await BuildSettingsList(httpResponse);
+
+            //TODO: Write the settings to the local settings directory
+        }
+
+        //Ugly way to pull down all settings into a text box.
+        //TODO: Match the updated setting against the setting stored locally
+        private async Task<string> BuildSettingsList(HttpResponseMessage httpResponse)
+        {
+            StringBuilder settingsString = new StringBuilder();
+            settingsString.Append("Settings:\n");
+            settingsString.Append(Environment.NewLine);
+            var settingsValues = JsonConvert.DeserializeObject<List<SettingsFromDB>>(await httpResponse.Content.ReadAsStringAsync());
+            foreach (var setting in settingsValues)
+            {
+                settingsString.Append(setting.Name);
+                settingsString.Append(": ");
+                settingsString.Append(setting.Value);
+                settingsString.Append(Environment.NewLine);
+            }
+            return settingsString.ToString();
+        }
     }
-
-
 }

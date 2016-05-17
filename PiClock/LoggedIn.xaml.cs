@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Windows.UI.Popups;
+using System.Net.Http;
 
 namespace PiClock
 {
@@ -18,44 +20,74 @@ namespace PiClock
         private bool loggedIn;
 
         public LoggedIn()
-        {
-            this.InitializeComponent();
-            this.loggedIn = true;
-            CheckLoggedIn();
+        { this.InitializeComponent(); }
 
-        }
-
+        //Retrieve the data from the previous parent page
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //Retrieve the data from the previous parent page
-            //Note: You cannot set control values until the "Loaded" event fires
-            this.employee = e.Parameter as Employee;
+            employee = e.Parameter as Employee;
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            textBlock.Text = String.Format("Welcome, {0} {1}", this.employee.fname, this.employee.lname); //Populate the Date & Time
-            //if (true == this.loggedIn)
-            //{
-            //    var localSettings = ApplicationData.Current.LocalSettings;
-            //    string Uri = string.Format("http://{0}:{1}{2}action=get_current_job_number&id={3}", localSettings.Values["DBLocation"],
-            //                                                                                        localSettings.Values["SslPort"],
-            //                                                                                        localSettings.Values["ApiLocation"],
-            //                                                                                        employee.id);
+            await CheckLoginStatus();
+            textBlock.Text = String.Format("Welcome, {0} {1}", employee.fname, employee.lname); //Populate the Date & Time
+            if (true == loggedIn)
+            {
+                Settings settings = new Settings();
+                Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
+                WebServiceCall wsCall = new WebServiceCall();
+                HttpResponseMessage httpResponse = new HttpResponseMessage();
+                wsCall.Uri = settings.ValidateSetting("UriPrefix");
+                ParamDictionary.Add("action", "CheckCurrentJob");
+                ParamDictionary.Add("employeeId", employee.id.ToString());
+                wsCall.ParamDictionary = ParamDictionary;
 
-            //    //Pull down the user's most recent OPEN punch
-            //    string JsonString = await JsonMethods.GetCurrentJobNumber(Uri);
+                httpResponse = await wsCall.POST_JsonToWebApi();
+                string jobString = await httpResponse.Content.ReadAsStringAsync();
+                //If a job is returned, deserialize it into a Job object
+                if ("null" != jobString)
+                {
+                    employee.CurrentJob = JsonConvert.DeserializeObject<Job>(jobString);
+                    textBlock_CurrentPunch.Text = String.Format("Current Job: {0}", employee.CurrentJob.Description);
+                }
+                else
+                { textBlock_CurrentPunch.Text = "Current Job: None"; }
+                
+            }
+            else
+            { textBlock_CurrentPunch.Text = "Not Logged In"; }
+    }
 
-            //    if ("null" != JsonString){
-            //        Punch punch = JsonConvert.DeserializeObject<Punch>(JsonString);
+        //TODO: Refactor
+        private async Task CheckLoginStatus()
+        {
+            Settings settings = new Settings();
+            Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
+            WebServiceCall wsCall = new WebServiceCall();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
+            wsCall.Uri = settings.ValidateSetting("UriPrefix");
+            ParamDictionary.Add("action", "CheckLoginStatus");
+            ParamDictionary.Add("employeeId", employee.id.ToString());
+            wsCall.ParamDictionary = ParamDictionary;
 
-            //        //Check to see if the user is punched into a job, or just punched in
-            //        if ("" != punch.id_jobs) //Punched into a job
-            //        { textBlock_CurrentPunch.Text = string.Format("Current Job: {0}", punch.id_jobs); }
-            //        else //Just punched in
-            //        { textBlock_CurrentPunch.Text = "Current Job: N/A"; }
-            //    }
-            //}
+            httpResponse = await wsCall.POST_JsonToWebApi();
+            if ("true" == await httpResponse.Content.ReadAsStringAsync())
+            {
+                loggedIn = true;
+                button_PunchIn.Visibility = Visibility.Collapsed;
+                button_PunchOut.Visibility = Visibility.Visible;
+                button_ChangeJob.Visibility = Visibility.Visible;
+            }
+            else if ("false" == await httpResponse.Content.ReadAsStringAsync())
+            {
+                loggedIn = false;
+                button_PunchIn.Visibility = Visibility.Visible;
+                button_PunchOut.Visibility = Visibility.Collapsed;
+                button_ChangeJob.Visibility = Visibility.Collapsed;
+            }
+            else
+            { return; }
         }
 
         private void button_Back_Click(object sender, RoutedEventArgs e)
@@ -64,26 +96,27 @@ namespace PiClock
             this.Frame.Navigate(typeof(MainPage), null);
         }
 
-        private void CheckLoggedIn()
-        {
-            if (true == this.loggedIn)
-            {
-                button_PunchIn.Visibility = Visibility.Collapsed;
-                button_PunchOut.Visibility = Visibility.Visible;
-            }
-            else if (false == this.loggedIn)
-            {
-                button_PunchIn.Visibility = Visibility.Visible;
-                button_PunchOut.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                button_PunchIn.Visibility = Visibility.Visible;
-                button_PunchOut.Visibility = Visibility.Visible;
-            }
-        }
+        //private void CheckLoggedIn()
+        //{
+        //    this.loggedIn = false;
+        //    if (true == this.loggedIn)
+        //    {
+        //        button_PunchIn.Visibility = Visibility.Collapsed;
+        //        button_PunchOut.Visibility = Visibility.Visible;
+        //    }
+        //    else if (false == this.loggedIn)
+        //    {
+        //        button_PunchIn.Visibility = Visibility.Visible;
+        //        button_PunchOut.Visibility = Visibility.Collapsed;
+        //    }
+        //    else
+        //    {
+        //        button_PunchIn.Visibility = Visibility.Visible;
+        //        button_PunchOut.Visibility = Visibility.Visible;
+        //    }
+        //}
 
-        private void button_PunchIn_Click(object sender, RoutedEventArgs e)
+        private async void button_PunchIn_Click(object sender, RoutedEventArgs e)
         {
             this.loggedIn = false;
             StringBuilder dateTimeString = new StringBuilder();
@@ -92,16 +125,33 @@ namespace PiClock
             dateTimeString.Append("employeeId: " + employee.id.ToString());
             dateTimeString.Append(" | ");
             dateTimeString.Append("punchInTime: " + currentDateTime);
-            
+
             string employeeId = employee.id.ToString();
 
             textBlock_CurrentPunch.Text = dateTimeString.ToString();
-            
+
+            var dialogBox = new MessageDialog("", "Are You Working on a Job Number?");
+            //dialogBox.Title = "Punch Into a Job Number?";
+            dialogBox.Commands.Add(new UICommand { Label = "Work on a Job", Id = 0 });
+            dialogBox.Commands.Add(new UICommand { Label = "No", Id = 1 });
+            var result = await dialogBox.ShowAsync();
+
             button_PunchIn.Visibility = Visibility.Collapsed;
             button_PunchOut.Visibility = Visibility.Visible;
+            button_ChangeJob.Visibility = Visibility.Visible;
+
+            //If a user chooses to punch into a job number, take them to that page
+            //If not, take them back to the Main screen
+            if (0 == (int)result.Id)
+            { Frame.Navigate(typeof(ChangeJob), employee); }
+            else
+            {
+                textBlock_CurrentPunch.Text = await PunchIn();
+                Frame.Navigate(typeof(MainPage), null);
+            }
         }
 
-        private void button_PunchOut_Click(object sender, RoutedEventArgs e)
+        private async void button_PunchOut_Click(object sender, RoutedEventArgs e)
         {
             this.loggedIn = false;
             StringBuilder dateTimeString = new StringBuilder();
@@ -115,39 +165,56 @@ namespace PiClock
 
             textBlock_CurrentPunch.Text = dateTimeString.ToString();
 
+            textBlock_CurrentPunch.Text = await PunchOut();
+
             button_PunchIn.Visibility = Visibility.Visible;
             button_PunchOut.Visibility = Visibility.Collapsed;
+            button_ChangeJob.Visibility = Visibility.Collapsed;
+
+            Frame.Navigate(typeof(MainPage), null);
         }
 
         private void button_ChangeJob_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(ChangeJob), null);
-        }
+        { Frame.Navigate(typeof(ChangeJob), employee); }
 
         private void button_ViewInfo_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private async void PunchIn()
+        private async Task<string> PunchIn()
         {
             Settings settings = new Settings();
             Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
             WebServiceCall wsCall = new WebServiceCall();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
             wsCall.Uri = settings.ValidateSetting("UriPrefix");
             ParamDictionary.Add("action", "PunchIn");
             ParamDictionary.Add("employeeId", employee.id.ToString());
-            ParamDictionary.Add("timestamp", null); //Timestamped automatically in MySql
-            ParamDictionary.Add("type", "in");
-            ParamDictionary.Add("open_status", "true");
+            ParamDictionary.Add("type", "1");
+            ParamDictionary.Add("open_status", "1");
             wsCall.ParamDictionary = ParamDictionary;
 
-            await wsCall.POST_JsonToWebApi();
+            httpResponse = await wsCall.POST_JsonToWebApi();
+            return await httpResponse.Content.ReadAsStringAsync();
         }
 
         private async Task<string> PunchOut()
         {
-            return null;
+            //TODO: Make sure to punch out of the "open" job (if there is one)
+            Settings settings = new Settings();
+            Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
+            WebServiceCall wsCall = new WebServiceCall();
+            HttpResponseMessage httpResponse = new HttpResponseMessage();
+            wsCall.Uri = settings.ValidateSetting("UriPrefix");
+            ParamDictionary.Add("action", "PunchOut");
+            ParamDictionary.Add("employeeId", employee.id.ToString());
+            ParamDictionary.Add("type", "0");
+            ParamDictionary.Add("open_status", "0");
+            wsCall.ParamDictionary = ParamDictionary;
+
+            httpResponse = await wsCall.POST_JsonToWebApi();
+            return await httpResponse.Content.ReadAsStringAsync();
         }
     }
 }

@@ -9,7 +9,6 @@ namespace PiClock.classes
 {
     class Punch
     {
-
         [JsonProperty("id")]
         public string id { get; set; }
         [JsonProperty("id_users")]
@@ -20,10 +19,19 @@ namespace PiClock.classes
         public DateTime timestamp { get; set; }
         [JsonProperty("type")]
         public string type { get; set; }
+        [JsonProperty("open_status")]
+        public string open_status { get; set; }
 
         public void PunchIn(Employee employee)
         {
 
         }
+
+        public void PunchOut(Employee employee)
+        {
+
+        }
+
+
     }
 }
