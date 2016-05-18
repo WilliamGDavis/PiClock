@@ -1,6 +1,7 @@
 ﻿using PiClock.classes;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -59,18 +60,8 @@ namespace PiClock
         private async void button_ChangeJob_Click(object sender, RoutedEventArgs e)
         {
             //Find the job the user is currently logged into
-            Settings settings = new Settings();
-            Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
-            WebServiceCall wsCall = new WebServiceCall();
-            HttpResponseMessage httpResponse = new HttpResponseMessage();
-            wsCall.Uri = settings.ValidateSetting("UriPrefix");
-
-            //Job Lookup by Description (Actually the JobCode)
-            ParamDictionary.Add("action", "JobLookup");
-            ParamDictionary.Add("jobDescription", textBox_NewJob.Text);
-            wsCall.ParamDictionary = ParamDictionary;
-            httpResponse = await wsCall.POST_JsonToWebApi();
-            string result = await httpResponse.Content.ReadAsStringAsync();
+            //Settings settings = new Settings();
+            string result = await JobLookup();
 
             if ("null" == result)
             {
@@ -78,33 +69,28 @@ namespace PiClock
                 return;
             }
 
-            ParamDictionary.Clear();
-            wsCall.ParamDictionary = null;
-
             //If a user is not currently logged into a job
-            if (null == employee.CurrentJob)
-            {
-                //Create a new job punch
-                ParamDictionary.Add("action", "JobPunch");
-                ParamDictionary.Add("employeeId", employee.id.ToString());
-                ParamDictionary.Add("newJobId", result);
-                wsCall.ParamDictionary = ParamDictionary;
-            }
-            else
-            {
-                //Change the User's Job if they're currently logged into one
-                ParamDictionary.Add("action", "ChangeJob");
-                ParamDictionary.Add("employeeId", employee.id.ToString());
-                ParamDictionary.Add("jobId", employee.CurrentJob.Id); 
-                ParamDictionary.Add("newJobId", result);
-                wsCall.ParamDictionary = ParamDictionary;
-            }
+            //if (null == employee.CurrentJob)
+            //{
+            Punch punch = new Punch();
+            await punch.PunchIn(employee);
+            await punch.PunchIntoJob(employee, result);
 
-
-            httpResponse = await wsCall.POST_JsonToWebApi();
             Frame.Navigate(typeof(MainPage), null);
         }
 
 
+        private async Task<string> JobLookup()
+        {
+            Dictionary<string, string> paramDictionary = new Dictionary<string, string>();
+            paramDictionary.Add("action", "JobLookup");
+            paramDictionary.Add("jobDescription", textBox_NewJob.Text);
+            WebServiceCall wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), paramDictionary);
+            var httpResponse = new HttpResponseMessage();
+
+            //Job Lookup by Description (Actually the JobCode)
+            httpResponse = await wsCall.POST_JsonToWebApi();
+            return await httpResponse.Content.ReadAsStringAsync();
+        }
     }
 }

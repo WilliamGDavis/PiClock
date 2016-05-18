@@ -47,7 +47,6 @@
         </Grid>
         <Grid Grid.Column="1" Grid.Row="0">
             <TextBlock x:Name="textBlock_CurrentTime" HorizontalAlignment="Center" Margin="69,10,75,0" TextWrapping="Wrap" Text="Current Time" VerticalAlignment="Top" Height="60" Width="240" TextAlignment="Center" Grid.Column="1"/>
-            <PasswordBox x:Name="passwordBox_PIN" HorizontalAlignment="Center" Margin="0,80,0,0" VerticalAlignment="Top" Width="240" BorderThickness="0" PreventKeyboardDisplayOnProgrammaticFocus="True" PasswordRevealMode="Hidden" HorizontalContentAlignment="Center" PasswordChanged="passwordBox_PIN_PasswordChanged"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="1">
             <TextBlock x:Name="textBlock_Result" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="102" Width="276" TextAlignment="Center"/>

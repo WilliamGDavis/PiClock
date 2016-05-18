@@ -19,14 +19,14 @@ namespace PiClock
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             //Read from local settings and display them to the user
-            Settings settings = new Settings();
-            settings.ReadAllSettings();
+            //Settings settings = new Settings();
+            Settings.ReadAllSettings();
 
             //Validate for null settings values and fill in the appropriate textboxes
-            textBox_PinLength.Text = CheckForNullSetting(settings.PinLength);
-            textBox_ApiServerAddress.Text = CheckForNullSetting(settings.ApiServerAddress);
-            textBox_ApiServerPort.Text = CheckForNullSetting(settings.ApiServerPort);
-            textBox_ApiDirectory.Text = CheckForNullSetting(settings.ApiDirectory);
+            textBox_PinLength.Text = CheckForNullSetting(Settings.PinLength);
+            textBox_ApiServerAddress.Text = CheckForNullSetting(Settings.ApiServerAddress);
+            textBox_ApiServerPort.Text = CheckForNullSetting(Settings.ApiServerPort);
+            textBox_ApiDirectory.Text = CheckForNullSetting(Settings.ApiDirectory);
         }
 
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
@@ -72,18 +72,19 @@ namespace PiClock
 
         private void WriteSettings()
         {
-            //TODO: Validate
-            Settings settings = new Settings();
-            settings.PinLength = textBox_PinLength.Text;
-            settings.ApiServerAddress = textBox_ApiServerAddress.Text;
-            settings.ApiServerPort = textBox_ApiServerPort.Text;
-            settings.ApiDirectory = textBox_ApiDirectory.Text;
-            settings.UriPrefix = String.Format("http://{0}:{1}{2}", settings.ApiServerAddress,
-                                                                    settings.ApiServerPort,
-                                                                    settings.ApiDirectory);
+            //TODO: Validate before passing text values to the local settings file
+            var paramDictionary = new Dictionary<string, string>();
+            paramDictionary.Add("PinLength", textBox_PinLength.Text); //TODO: Write this to the database instead of the local application
+            paramDictionary.Add("ApiServerAddress", textBox_ApiServerAddress.Text);
+            paramDictionary.Add("ApiServerPort", textBox_ApiServerPort.Text);
+            paramDictionary.Add("ApiDirectory", textBox_ApiDirectory.Text);
+            paramDictionary.Add("UriPrefix", String.Format("http://{0}:{1}{2}", Settings.ApiServerAddress, //TODO: Handle https if selected to use SSL
+                                                                                Settings.ApiServerPort,
+                                                                                Settings.ApiDirectory));
+            Settings.ParamDictionary = paramDictionary;
 
             //Write the values to the settings location
-            settings.WriteAllSettings();
+            Settings.WriteAllSettings();
         }
 
         //Check to ensure a setting value is not null, and if it is return an empty string
@@ -93,12 +94,12 @@ namespace PiClock
         private async void button_UpdateSettings_Click(object sender, RoutedEventArgs e)
         {
             textBlock_AllSettings.Text = "Updating Settings from Database...";
-            Settings settings = new Settings();
+            //Settings settings = new Settings();
             Dictionary<string, string> ParamDictionary = new Dictionary<string, string>();
             WebServiceCall wsCall = new WebServiceCall();
             HttpResponseMessage httpResponse = new HttpResponseMessage();
-            wsCall.Uri = settings.ValidateSetting("UriPrefix");
-            ParamDictionary.Add("action", "RetrieveSettings");
+            wsCall.Uri = Settings.ValidateSetting("UriPrefix");
+            ParamDictionary.Add("action", "GetSettings");
             wsCall.ParamDictionary = ParamDictionary;
 
             httpResponse = await wsCall.POST_JsonToWebApi();

@@ -4,33 +4,29 @@ using Windows.Storage;
 
 namespace PiClock.classes
 {
-    class Settings
+    static class Settings
     {
-        public string PinLength { get; set; }
-        public string ApiServerAddress { get; set; }
-        public string ApiServerPort { get; set; }
-        public string ApiDirectory { get; set; }
-        public string UriPrefix { get; set; }
-        private ApplicationDataContainer SettingsLocation = ApplicationData.Current.LocalSettings;
+        public static string PinLength { get; set; }
+        public static string ApiServerAddress { get; set; }
+        public static string ApiServerPort { get; set; }
+        public static string ApiDirectory { get; set; }
+        public static string UriPrefix { get; set; }
+        public static Dictionary<string, string> ParamDictionary { get; set; } //Dictionary of all the application settings, set application-side
+        private readonly static ApplicationDataContainer SettingsLocation = ApplicationData.Current.LocalSettings; //Use the application's "LocalSettings" folder to hold the settings values
 
-        public Settings()
+        //Write the properties of this class to a settings file
+        public static void WriteAllSettings()
         {
-        }
-
-        //Write the properties of this instance to the setting file
-        //TODO: Validation
-        public void WriteAllSettings()
-        {
-            SettingsLocation.Values["PinLength"] = PinLength;
-            SettingsLocation.Values["ApiServerAddress"] = ApiServerAddress;
-            SettingsLocation.Values["ApiServerPort"] = ApiServerPort;
-            SettingsLocation.Values["ApiDirectory"] = ApiDirectory;
-            SettingsLocation.Values["UriPrefix"] = UriPrefix;
+            if (null != ParamDictionary)
+            {
+                foreach (var row in ParamDictionary)
+                { SettingsLocation.Values[row.Key] = row.Value; }
+            }
         }
 
         //Read all the setting and pass them to this instance
         //If the setting does not exist, it will set the field to a null value
-        public void ReadAllSettings()
+        public static void ReadAllSettings()
         {
             PinLength = ValidateSetting("PinLength");
             ApiServerAddress = ValidateSetting("ApiServerAddress");
@@ -41,12 +37,12 @@ namespace PiClock.classes
 
         //Write an individial value to settings
         //TODO: Validation
-        public void WriteSetting(string key, string value)
+        public static void WriteSetting(string key, string value)
         { SettingsLocation.Values[key] = value; }
 
         //Return an individual setting's value
         //Expected result: string value of a setting, or a null if the setting doesn't exist
-        public string ReadSetting(string key)
+        public static string ReadSetting(string key)
         { return ValidateSetting(key); }
 
         //Used to "Clear" out the settings file, and all of it's values.  USE CAREFULLY!
@@ -56,7 +52,7 @@ namespace PiClock.classes
 
         //Read from the settings file and set the class fields
         //If the setting does not exist, set the field to a null value
-        public string ValidateSetting(string setting)
+        public static string ValidateSetting(string setting)
         {
             return setting =
                 (null != SettingsLocation.Values[setting]) ?
@@ -65,9 +61,9 @@ namespace PiClock.classes
         }
 
         //Try to parse the string value of PinLength to an int.  If it can't, return a 0 value
-        public int ConvertPinLengthToInt(string settingsPinLength)
+        public static int ConvertStringToInt(string settingValue)
         {
-            int value = (Int32.TryParse(settingsPinLength, out value)) ?
+            int value = (Int32.TryParse(settingValue, out value)) ?
                     value :
                     0;
             return value;

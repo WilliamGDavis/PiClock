@@ -11,22 +11,29 @@ namespace PiClock.classes
         public string Uri { get; set; }
         public string Action { get; set; }
         public Dictionary<string, string> ParamDictionary { get; set; }
+        private HttpClient HttpClient { get; set; }
+        private HttpRequestMessage HttpRequest { get; set; }
+        private HttpResponseMessage HttpResponse { get; set; }
 
-        public WebServiceCall()
-        {}
+        public WebServiceCall() { }
+
+        public WebServiceCall(string uri = null, Dictionary<string, string> paramDictionary = null)
+        {
+            Uri = uri;
+            ParamDictionary = paramDictionary;
+        }
 
         //Connect to a web service and retrieve the data (JSON format) using the GET verb
         public async Task<HttpResponseMessage> GET_JsonFromWebApi()
         {
-            HttpResponseMessage httpResponse = null;
             if (null != Uri)
             {
-                using (HttpClient httpClient = new HttpClient())
+                using (HttpClient = new HttpClient())
                 {
-                    httpResponse = await httpClient.GetAsync(new Uri(Uri));
-                    httpClient.Dispose();
+                    HttpResponse = await HttpClient.GetAsync(new Uri(Uri));
+                    HttpClient.Dispose();
                 }
-                return httpResponse;
+                return HttpResponse;
             }
             else
             { return null; }
@@ -36,20 +43,19 @@ namespace PiClock.classes
         //Connect to a web service and retrieve the data (JSON format) using the POST verb
         public async Task<HttpResponseMessage> POST_JsonToWebApi()
         {
-            HttpResponseMessage httpResponse = null;
             if (null != Uri && null != ParamDictionary)
             {
-                using (HttpClient httpClient = new HttpClient())
+                using (HttpClient = new HttpClient())
                 {
-                    using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(Uri)))
+                    using (HttpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(Uri)))
                     {
-                        httpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
-                        httpResponse = await httpClient.SendAsync(httpRequest);
+                        HttpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
+                        HttpResponse = await HttpClient.SendAsync(HttpRequest);
                     }
-
-                    httpClient.Dispose();
+                    HttpRequest.Dispose();
+                    HttpClient.Dispose();
                 }
-                return httpResponse;
+                return HttpResponse;
             }
             else
             { return null; }
