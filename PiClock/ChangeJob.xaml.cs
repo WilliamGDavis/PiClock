@@ -15,19 +15,19 @@ namespace PiClock
     /// </summary>
     public sealed partial class ChangeJob : Page
     {
-        Employee employee { get; set; }
+        Employee Employee { get; set; }
 
         public ChangeJob()
         { this.InitializeComponent(); }
 
         //Retrieve the data from the previous parent page
         protected override void OnNavigatedTo(NavigationEventArgs e)
-        { employee = e.Parameter as Employee; }
+        { Employee = e.Parameter as Employee; }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (null != employee.CurrentJob)
-            { textBox_CurrentJob.Text = employee.CurrentJob.Description; }
+            if (null != Employee.CurrentJob)
+            { textBox_CurrentJob.Text = Employee.CurrentJob.Description; }
             else
             { textBox_CurrentJob.Text = "None"; }
         }
@@ -61,20 +61,30 @@ namespace PiClock
         {
             //Find the job the user is currently logged into
             //Settings settings = new Settings();
-            string result = await JobLookup();
+            string newJobId = await JobLookup();
 
-            if ("null" == result)
+            if ("null" == newJobId)
             {
                 textBlock.Text = "Job Number does not exist!";
                 return;
             }
 
-            //If a user is not currently logged into a job
-            //if (null == employee.CurrentJob)
-            //{
             Punch punch = new Punch();
-            await punch.PunchIn(employee);
-            await punch.PunchIntoJob(employee, result);
+            var paramDictionary = new Dictionary<string, string>();
+            paramDictionary.Add("action", "PunchIn");
+            paramDictionary.Add("employeeId", Employee.id.ToString());
+            punch.Employee = Employee;
+            punch.ParamDictionary = paramDictionary;
+            await punch.PunchIn();
+
+            paramDictionary.Clear();
+            paramDictionary.Add("action", "PunchIntoJob");
+            paramDictionary.Add("employeeId", Employee.id.ToString());
+            paramDictionary.Add("currentJobId", (null != Employee.CurrentJob) ? Employee.CurrentJob.Id : "null"); //If a user is not currently logged into a job, set a null string value
+            paramDictionary.Add("newJobId", newJobId);
+            punch.Employee = Employee;
+            punch.ParamDictionary = paramDictionary;
+            await punch.PunchIntoJob();
 
             Frame.Navigate(typeof(MainPage), null);
         }

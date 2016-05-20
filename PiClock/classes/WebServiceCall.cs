@@ -29,10 +29,7 @@ namespace PiClock.classes
             if (null != Uri)
             {
                 using (HttpClient = new HttpClient())
-                {
-                    HttpResponse = await HttpClient.GetAsync(new Uri(Uri));
-                    HttpClient.Dispose();
-                }
+                { HttpResponse = await HttpClient.GetAsync(new Uri(Uri)); }
                 return HttpResponse;
             }
             else
@@ -52,8 +49,6 @@ namespace PiClock.classes
                         HttpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
                         HttpResponse = await HttpClient.SendAsync(HttpRequest);
                     }
-                    HttpRequest.Dispose();
-                    HttpClient.Dispose();
                 }
                 return HttpResponse;
             }
@@ -75,14 +70,13 @@ namespace PiClock.classes
                         httpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
                         httpResponse = await httpClient.SendAsync(httpRequest);
                     }
-
-                    httpClient.Dispose();
                 }
                 return httpResponse;
             }
             else
             { return null; }
         }
+
     }
 
     class DbFunctions : WebServiceCall

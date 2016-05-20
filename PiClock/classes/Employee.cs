@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace PiClock.classes
 {
@@ -19,5 +21,27 @@ namespace PiClock.classes
         public Job CurrentJob { get; set; }
         [JsonProperty("jobList")]
         public List<Job> JobList { get; set; }
+
+        public Dictionary<string, string> ParamDictionary { get; set; }
+        
+        public async Task<bool> CheckLoginStatus()
+        {
+            string[] requiredParams = { "action", "employeeId" };
+            if ("true" == await CallWebService(requiredParams)) //this refers to the current instance of the class
+            { return true; }
+            else
+            { return false; }
+        }
+
+        private async Task<string> CallWebService(string[] requiredParams = null)
+        {
+            if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&
+                null != this &&
+                null != ParamDictionary
+                )
+            { return await CommonMethods.ReturnStringFromWebService(ParamDictionary); }
+            else
+            { return null; }
+        }
     }
 }

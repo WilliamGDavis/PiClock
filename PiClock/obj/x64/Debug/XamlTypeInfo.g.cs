@@ -138,7 +138,7 @@ namespace PiClock.PiClock_XamlTypeInfo
             _typeNameTable[2] = "Windows.UI.Xaml.Controls.UserControl";
             _typeNameTable[3] = "PiClock.Configuration";
             _typeNameTable[4] = "PiClock.Launcher";
-            _typeNameTable[5] = "PiClock.LoggedIn";
+            _typeNameTable[5] = "PiClock.EmployeePage";
             _typeNameTable[6] = "PiClock.MainPage";
             _typeNameTable[7] = "PiClock.QuickView";
 
@@ -148,7 +148,7 @@ namespace PiClock.PiClock_XamlTypeInfo
             _typeTable[2] = typeof(global::Windows.UI.Xaml.Controls.UserControl);
             _typeTable[3] = typeof(global::PiClock.Configuration);
             _typeTable[4] = typeof(global::PiClock.Launcher);
-            _typeTable[5] = typeof(global::PiClock.LoggedIn);
+            _typeTable[5] = typeof(global::PiClock.EmployeePage);
             _typeTable[6] = typeof(global::PiClock.MainPage);
             _typeTable[7] = typeof(global::PiClock.QuickView);
         }
@@ -188,7 +188,7 @@ namespace PiClock.PiClock_XamlTypeInfo
         private object Activate_0_ChangeJob() { return new global::PiClock.ChangeJob(); }
         private object Activate_3_Configuration() { return new global::PiClock.Configuration(); }
         private object Activate_4_Launcher() { return new global::PiClock.Launcher(); }
-        private object Activate_5_LoggedIn() { return new global::PiClock.LoggedIn(); }
+        private object Activate_5_EmployeePage() { return new global::PiClock.EmployeePage(); }
         private object Activate_6_MainPage() { return new global::PiClock.MainPage(); }
         private object Activate_7_QuickView() { return new global::PiClock.QuickView(); }
 
@@ -231,9 +231,9 @@ namespace PiClock.PiClock_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 5:   //  PiClock.LoggedIn
+            case 5:   //  PiClock.EmployeePage
                 userType = new global::PiClock.PiClock_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_5_LoggedIn;
+                userType.Activator = Activate_5_EmployeePage;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;

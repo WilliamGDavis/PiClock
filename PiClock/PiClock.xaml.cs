@@ -137,7 +137,7 @@ namespace PiClock
                 if (null != employee)
                 { //Successful Login
                     CurrentPin = "";
-                    Frame.Navigate(typeof(LoggedIn), employee);
+                    Frame.Navigate(typeof(EmployeePage), employee);
                 }
                 else
                 { //Unsuccessful Login

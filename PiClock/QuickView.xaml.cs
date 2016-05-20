@@ -4,30 +4,25 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using PiClock.classes;
-
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace PiClock
 {
     public sealed partial class QuickView : Page
     {
-        private List<Employee> employeeList;
+        private List<Employee> EmployeeList { get; set; }
 
         public QuickView()
-        {
-            this.InitializeComponent();
-        }
+        { InitializeComponent(); }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            //Retrieve the data from the previous parent page
-            //Note: You cannot set control values until the "Loaded" event fires
-            this.employeeList = e.Parameter as List<Employee>;
-        }
+        { EmployeeList = e.Parameter as List<Employee>; }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             //Populate the Employee ListView
-            foreach (Employee employee in this.employeeList)
+            foreach (Employee employee in EmployeeList)
             {
                 ListViewItem lvItem = new ListViewItem();
                 lvItem.Tag = employee.id;
@@ -37,10 +32,7 @@ namespace PiClock
         }
 
         private void button_Back_Click(object sender, RoutedEventArgs e)
-        {
-            this.employeeList = null;
-            this.Frame.Navigate(typeof(MainPage), null);
-        }
+        { Frame.Navigate(typeof(MainPage), null); }
 
         private string BuildListViewRow(Employee employee)
         {
@@ -48,15 +40,37 @@ namespace PiClock
         }
 
         private string FormatFullName(Employee employee)
-        {
-            return string.Format("{0} {1} {2}", employee.fname, employee.mname, employee.lname);
-        }
+        { return string.Format("{0} {1} {2}", employee.fname, employee.mname, employee.lname); }
 
-        private void listView_Employees_ItemActivate(object sender, SelectionChangedEventArgs e)
+        private async void listView_Employees_ItemActivate(object sender, SelectionChangedEventArgs e)
         {
             int selectedIndex = listView_Employees.SelectedIndex;
-            ListViewItem name = (ListViewItem)listView_Employees.Items[selectedIndex];
-            textBlock.Text = String.Format("ID: {0}\nName: {1}", name.Tag.ToString(), name.Content.ToString());
+            var name = (ListViewItem)listView_Employees.Items[selectedIndex];
+
+            var employee = new Employee();
+            var paramDictionary = new Dictionary<string, string>();
+            paramDictionary.Add("action", "CheckLoginStatus");
+            paramDictionary.Add("employeeId", name.Tag.ToString());
+            employee.ParamDictionary = paramDictionary;
+
+            bool isLoggedIn = await employee.CheckLoginStatus();
+            Job currentJob = null;
+            if (true == isLoggedIn)
+            {
+                paramDictionary.Clear();
+                Job job = new Job();
+                paramDictionary.Add("action", "CheckCurrentJob");
+                paramDictionary.Add("employeeId", name.Tag.ToString());
+                job.ParamDictionary = paramDictionary;
+
+                //Should return a JSON string or null (if there were errors)
+                string result = await job.CheckCurrentJob();
+
+                if ("null" != result)
+                { currentJob = JsonConvert.DeserializeObject<Job>(result); }
+            }
+            string jobDescription = (null != currentJob) ? currentJob.Description : "None";
+            textBlock.Text = String.Format("ID: {0}\nName: {1}\nLogged In: {2}", name.Tag.ToString(), name.Content.ToString(), (true == isLoggedIn) ? "Yes (" + jobDescription + ")" : "No");
         }
     }
 

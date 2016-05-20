@@ -1,12 +1,12 @@
-﻿<Page
-    x:Class="PiClock.LoggedIn"
+﻿<Page x:ConnectionId='1'
+    x:Class="PiClock.EmployeePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PiClock"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Loaded="Page_Loaded">
+                        >
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" BorderThickness="0">
         <Grid.ColumnDefinitions>
@@ -14,7 +14,7 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="114" Width="294"/>
+            <TextBlock x:ConnectionId='8' x:Name="textBlock" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="114" Width="294"/>
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
@@ -23,7 +23,7 @@
                 <RowDefinition Height="60" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
-                <TextBlock x:Name="textBlock_CurrentPunch" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="120" Width="260" TextAlignment="Center"/>
+                <TextBlock x:ConnectionId='7' x:Name="textBlock_CurrentPunch" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Height="120" Width="260" TextAlignment="Center"/>
             </Grid>
             <Grid Grid.Row="1">
                 <Grid>
@@ -36,22 +36,23 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Column="0" Grid.Row="0">
-                        <Button x:Name="button_PunchIn" Content="Punch In" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60" Click="button_PunchIn_Click"/>
+                        <Button x:ConnectionId='6' x:Name="button_PunchIn" Content="Punch In" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60"                              Visibility="Collapsed"/>
                     </Grid>
                     <Grid Grid.Column="0" Grid.Row="1">
-                        <Button x:Name="button_ChangeJob" Content="Change Job" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60" Click="button_ChangeJob_Click"/>
+                        <Button x:ConnectionId='5' x:Name="button_ChangeJob" Content="Change Job" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60"                                Visibility="Collapsed"/>
                     </Grid>
                     <Grid Grid.Column="1" Grid.Row="0">
-                        <Button x:Name="button_PunchOut" Content="Punch Out" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60" Click="button_PunchOut_Click"/>
+                        <Button x:ConnectionId='4' x:Name="button_PunchOut" Content="Punch Out" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60"                               Visibility="Collapsed"/>
                     </Grid>
                     <Grid Grid.Column="1" Grid.Row="1">
-                        <Button x:Name="button_ViewInfo" Content="View Info" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60" Click="button_ViewInfo_Click"/>
+                        <Button x:ConnectionId='3' x:Name="button_ViewInfo" Content="View Info" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Width="100" Height="60"                              />
                     </Grid>
                 </Grid>
             </Grid>
             <Grid Grid.Row="2">
-                <Button x:Name="button_Back" Content="Back" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center" Click="button_Back_Click"/>
+                <Button x:ConnectionId='2' x:Name="button_Back" Content="Back" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Center"                          />
             </Grid>
         </Grid>
     </Grid>
 </Page>
+

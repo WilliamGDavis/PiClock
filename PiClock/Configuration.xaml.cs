@@ -12,7 +12,7 @@ namespace PiClock
 {
     public sealed partial class Configuration : Page
     {
-        
+
         public Configuration()
         { this.InitializeComponent(); }
 
@@ -27,6 +27,8 @@ namespace PiClock
             textBox_ApiServerAddress.Text = CheckForNullSetting(Settings.ApiServerAddress);
             textBox_ApiServerPort.Text = CheckForNullSetting(Settings.ApiServerPort);
             textBox_ApiDirectory.Text = CheckForNullSetting(Settings.ApiDirectory);
+            if ("s" == CheckForNullSetting(Settings.UseSsl))
+            { checkBox_UseSsl.IsChecked = true; }
         }
 
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
@@ -45,9 +47,10 @@ namespace PiClock
             textBlock_ConnectionStatus.Text = "Checking Connection...";
 
             //TODO: Check for valid values in the textboxes
-            string uriPrefix = String.Format("http://{0}:{1}{2}", textBox_ApiServerAddress.Text, 
-                                                                  textBox_ApiServerPort.Text, 
-                                                                  textBox_ApiDirectory.Text);
+            string uriPrefix = String.Format("http://{0}{1}:{2}{3}", textBox_ApiServerAddress.Text,
+                                                                     (true == checkBox_UseSsl.IsChecked) ? "s" : "",
+                                                                     textBox_ApiServerPort.Text,
+                                                                     textBox_ApiDirectory.Text);
 
             //Check for a vaild connection to the web service
             try
@@ -78,9 +81,11 @@ namespace PiClock
             paramDictionary.Add("ApiServerAddress", textBox_ApiServerAddress.Text);
             paramDictionary.Add("ApiServerPort", textBox_ApiServerPort.Text);
             paramDictionary.Add("ApiDirectory", textBox_ApiDirectory.Text);
-            paramDictionary.Add("UriPrefix", String.Format("http://{0}:{1}{2}", Settings.ApiServerAddress, //TODO: Handle https if selected to use SSL
-                                                                                Settings.ApiServerPort,
-                                                                                Settings.ApiDirectory));
+            paramDictionary.Add("UseSsl", (true == checkBox_UseSsl.IsChecked) ? "s" : "");
+            paramDictionary.Add("UriPrefix", String.Format("http://{0}{1}:{2}{3}", Settings.ApiServerAddress, //TODO: Handle https if selected to use SSL
+                                                                                   Settings.UseSsl,
+                                                                                   Settings.ApiServerPort,
+                                                                                   Settings.ApiDirectory));
             Settings.ParamDictionary = paramDictionary;
 
             //Write the values to the settings location

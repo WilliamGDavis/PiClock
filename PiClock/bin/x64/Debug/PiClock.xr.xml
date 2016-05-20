@@ -70,7 +70,7 @@
     </RootType>
     <RootType FullName="PiClock.Configuration" />
     <RootType FullName="PiClock.Launcher" />
-    <RootType FullName="PiClock.LoggedIn" />
+    <RootType FullName="PiClock.EmployeePage" />
     <RootType FullName="PiClock.MainPage" />
     <RootType FullName="Windows.UI.Xaml.Controls.ListView">
       <RootProperty Name="HorizontalAlignment" />

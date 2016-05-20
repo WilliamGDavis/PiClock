@@ -11,6 +11,7 @@ namespace PiClock.classes
         public static string ApiServerPort { get; set; }
         public static string ApiDirectory { get; set; }
         public static string UriPrefix { get; set; }
+        public static string UseSsl { get; set; }
         public static Dictionary<string, string> ParamDictionary { get; set; } //Dictionary of all the application settings, set application-side
         private readonly static ApplicationDataContainer SettingsLocation = ApplicationData.Current.LocalSettings; //Use the application's "LocalSettings" folder to hold the settings values
 
@@ -33,6 +34,7 @@ namespace PiClock.classes
             ApiServerPort = ValidateSetting("ApiServerPort");
             ApiDirectory = ValidateSetting("ApiDirectory");
             UriPrefix = ValidateSetting("UriPrefix");
+            UseSsl = ValidateSetting("UseSsl");
         }
 
         //Write an individial value to settings

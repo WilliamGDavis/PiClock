@@ -20,7 +20,6 @@
         <CheckBox x:ConnectionId='11' x:Name="checkBox_UseSsl" Content="Use SSL" HorizontalAlignment="Left" Margin="221,230,0,0" VerticalAlignment="Top"/>
         <Button x:ConnectionId='12' x:Name="button_UpdateSettings" Content="Update Settings" HorizontalAlignment="Left" Margin="632,303,0,0" VerticalAlignment="Top"                                    />
         <TextBlock x:ConnectionId='13' x:Name="textBlock_AllSettings" HorizontalAlignment="Left" Margin="445,10,0,0" TextWrapping="Wrap" Text="Settings" VerticalAlignment="Top" Height="288" Width="316"/>
-
     </Grid>
 </Page>
 
