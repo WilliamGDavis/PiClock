@@ -75,9 +75,11 @@ namespace PiClock
                 if (true == await TryPunchIn())
                 { Frame.Navigate(typeof(MainPage), null); }
                 else
-                { textBlock_CurrentPunch.Text = "An Error occured"; return; }
+                {
+                    textBlock_CurrentPunch.Text = "An Error occured";
+                    return;
+                }
             }
-
         }
 
         //TODO: Consider whether or not to punch in a user if they clicked to punch into a job, but cancelled before typing in a job number
@@ -95,7 +97,7 @@ namespace PiClock
         { Frame.Navigate(typeof(ChangeJob), Employee); }
 
         private void button_ViewInfo_Click(object sender, RoutedEventArgs e)
-        { }
+        { Frame.Navigate(typeof(Employee_Info), Employee); }
 
         //Attempt to punch into the database
         private async Task<bool> TryPunchIn()
@@ -175,15 +177,15 @@ namespace PiClock
         {
             if (false == LoggedIn)
             {
-                button_PunchIn.Visibility = Visibility.Visible;
-                button_PunchOut.Visibility = Visibility.Collapsed;
-                button_ChangeJob.Visibility = Visibility.Collapsed;
+                button_PunchIn.IsEnabled = true;
+                button_PunchOut.IsEnabled = false;
+                button_ChangeJob.IsEnabled = false;
             }
             else if (true == LoggedIn)
             {
-                button_PunchIn.Visibility = Visibility.Collapsed;
-                button_PunchOut.Visibility = Visibility.Visible;
-                button_ChangeJob.Visibility = Visibility.Visible;
+                button_PunchIn.IsEnabled = false;
+                button_PunchOut.IsEnabled = true;
+                button_ChangeJob.IsEnabled = true;
             }
             else
             { return; }

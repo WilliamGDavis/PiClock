@@ -445,3 +445,8 @@ C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\EmployeePage.g.cs
 C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\EmployeePage.xaml
 C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\EmployeePage.xbf
 C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\EmployeePage.xbf
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.g.i.cs
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.g.cs
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.xaml
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.xbf
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Employee_Info.xbf

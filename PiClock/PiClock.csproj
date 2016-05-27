@@ -98,15 +98,20 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="classes\Widget.cs" />
+    <Compile Include="Employee_Info.xaml.cs">
+      <DependentUpon>Employee_Info.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ChangeJob.xaml.cs">
       <DependentUpon>ChangeJob.xaml</DependentUpon>
     </Compile>
+    <Compile Include="classes\Authentication.cs" />
     <Compile Include="classes\CommonMethods.cs" />
     <Compile Include="classes\Employee.cs" />
     <Compile Include="classes\Job.cs" />
-    <Compile Include="classes\JsonMethods.cs" />
     <Compile Include="classes\Punch.cs" />
     <Compile Include="classes\Settings.cs" />
+    <Compile Include="classes\TickingTimer.cs" />
     <Compile Include="classes\WebServiceCall.cs" />
     <Compile Include="Configuration.xaml.cs">
       <DependentUpon>Configuration.xaml</DependentUpon>
@@ -147,6 +152,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Employee_Info.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ChangeJob.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

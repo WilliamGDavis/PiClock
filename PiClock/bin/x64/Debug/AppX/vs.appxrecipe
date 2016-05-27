@@ -22,13 +22,13 @@
     <AppXManifest Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-05-20T13:39:54.325</Modified>
+      <Modified>2016-05-27T23:36:52.680</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.exe">
       <PackagePath>entrypoint\PiClock.exe</PackagePath>
-      <Modified>2016-05-20T13:39:53.926</Modified>
+      <Modified>2016-05-27T23:36:52.044</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\.nuget\packages\Microsoft.ApplicationInsights\1.0.0\lib\portable-win81+wpa81\Microsoft.ApplicationInsights.dll">
       <PackagePath>Microsoft.ApplicationInsights.dll</PackagePath>
@@ -502,7 +502,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PiClock.xr.xml">
       <PackagePath>PiClock.xr.xml</PackagePath>
-      <Modified>2016-05-19T20:21:40.138</Modified>
+      <Modified>2016-05-27T23:36:51.894</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -510,11 +510,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-05-20T13:31:53.399</Modified>
+      <Modified>2016-05-27T23:36:52.585</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Core\PiClock.exe">
       <PackagePath>PiClock.exe</PackagePath>
-      <Modified>2016-05-20T13:39:54.323</Modified>
+      <Modified>2016-05-27T23:36:52.679</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

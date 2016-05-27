@@ -6,9 +6,11 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace PiClock
 {
+    //TODO: Write error handling for when the Apache server is inaccessable
     public sealed partial class MainPage : Page
     {
         private DispatcherTimer DispatcherTimer { get; set; }
@@ -19,19 +21,18 @@ namespace PiClock
             set
             {
                 _currentPin = value;
-                //Match the PIN length to the value in the Settings class
+                //Match the PIN length to the value in the Settings class and attempt to login if they match
                 if (Settings.ConvertStringToInt(Settings.PinLength) == _currentPin.Length)
-                { TryLogin(); }
+                { Login(); }
             }
         }
 
         public MainPage()
         {
             InitializeComponent();
-            Settings.ReadAllSettings(); //Read all settings values from "LocalSettings" and assign them to the static class Settings
-            //PinLength = Settings.ConvertStringToInt(Settings.PinLength); //Convert the Settings.PinLength to an Int
+            Settings.ReadLocalSettings(); //Read all settings values from "LocalSettings" and assign them to the static class Settings
             DispatcherTimerSetup(); //Display the current date/time in a readable format and create the ticking "timer" to update the date/time every second
-
+            //textBlock_CurrentTime.Text = Format_dt_Current(TickingTimer.DispatcherTimerSetup());
             //Settings.EraseAllSettings();
         }
 
@@ -59,22 +60,13 @@ namespace PiClock
         { CurrentPin += btn_8.Content; }
         private void btn_9_Click(object sender, RoutedEventArgs e)
         { CurrentPin += btn_9.Content; }
-
+        
+        //Quick Peek Button Event
         private async void button_QuickPeek_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var paramDictionary = new Dictionary<string, string>();
-                paramDictionary.Add("action", "EmployeeList");
-                var wsCall = new WebServiceCall(Settings.ReadSetting("UriPrefix"), paramDictionary);
-
-                //Retrieve the array of employees as a Json String
-                //Expected Result: JSON Object
-                HttpResponseMessage httpResponse = await wsCall.POST_JsonToWebApi();
-
-                //Convert the Json string to a List of Employee Objects
-                //TODO: Error Handling
-                List<Employee> employeeList = JsonConvert.DeserializeObject<List<Employee>>(await httpResponse.Content.ReadAsStringAsync());
+                List<Employee> employeeList = await GetEmployeeList();
 
                 //Stop the timer (not needed for the following page)
                 DispatcherTimer.Stop();
@@ -86,10 +78,6 @@ namespace PiClock
             { textBlock_Result.Text = ex.Message; }
         }
 
-        //Config Button (Temporary)
-        private void button_Config_Click(object sender, RoutedEventArgs e)
-        { Frame.Navigate(typeof(Configuration), null); }
-        
         public void DispatcherTimerSetup()
         {
             //Create a new timer and assign the Tick event
@@ -115,41 +103,63 @@ namespace PiClock
             return newString;
         }
 
-        private async void TryLogin()
+        private async void Login()
+        {
+            var employee = new Employee();
+            string result = null;
+            try
+            { result = await TryLogin(); }
+            catch (HttpRequestException)
+            { return; }
+
+            //If a PIN is not in the database, the TryLogin() will return an empty array
+            employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
+
+            if (null != employee)
+            { //Successful Login
+                CurrentPin = "";
+                Frame.Navigate(typeof(EmployeePage), employee);
+            }
+            else
+            { //Unsuccessful Login
+                CurrentPin = "";
+                textBlock_Result.Text = "Incorrect Login";
+                return;
+            }
+        }
+
+        private async Task<string> TryLogin()
         {
             try
             {
-                var employee = new Employee();
+                var authentication = new Authentication();
                 var paramDictionary = new Dictionary<string, string>();
                 paramDictionary.Add("action", "PinLogin");
                 paramDictionary.Add("pin", CurrentPin);
-                var wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), paramDictionary);
-                HttpResponseMessage httpResponse = await wsCall.POST_JsonToWebApi();
-
-                //Validation to ensure an employee object can be populated with accurate data
-
-                //If a PIN is not in the database, the HttpResponse will return an empty array
-                if ("[]" != await httpResponse.Content.ReadAsStringAsync())
-                { employee = JsonConvert.DeserializeObject<Employee>(await httpResponse.Content.ReadAsStringAsync()); }
-                else
-                { employee = null; }
-
-                if (null != employee)
-                { //Successful Login
-                    CurrentPin = "";
-                    Frame.Navigate(typeof(EmployeePage), employee);
-                }
-                else
-                { //Unsuccessful Login
-                    CurrentPin = "";
-                    textBlock_Result.Text = "Incorrect Login";
-                    return;
-                }
+                authentication.ParamDictionary = paramDictionary;
+                return await authentication.Login();
             }
-            catch (HttpRequestException)
-            { textBlock_Result.Text = "Cannot connect to Apache server"; }
-            catch (JsonException) //TODO: Do some proper error handling here, it's a lazy fix.  The error is because JsonConvert is trying to parse the string "Cannot connect to database", returned from the webservice when it cannot connect to the db
-            { textBlock_Result.Text = "Something went wrong... Check your MySql connection"; }
+            catch (HttpRequestException ex)
+            { return ex.Message; }
+        }
+
+        private async Task<List<Employee>> GetEmployeeList()
+        {
+            string employeeList = await TryGetEmployeeList();
+            if ("Cannot connect to database" != employeeList &&
+                "[]" != employeeList) //Bad connection or an empty strin array returned from web service
+            { return JsonConvert.DeserializeObject<List<Employee>>(employeeList); }
+            else
+            { return new List<Employee>(); }
+        }
+
+        private async Task<string> TryGetEmployeeList()
+        {
+            var employee = new Employee();
+            var paramDictionary = new Dictionary<string, string>();
+            paramDictionary.Add("action", "GetEmployeeList");
+            employee.ParamDictionary = paramDictionary;
+            return await employee.GetEmployeeList();
         }
     }
 }

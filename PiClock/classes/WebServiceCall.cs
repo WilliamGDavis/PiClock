@@ -18,19 +18,17 @@ namespace PiClock.classes
         public WebServiceCall() { }
 
         public WebServiceCall(string uri = null, Dictionary<string, string> paramDictionary = null)
-        {
-            Uri = uri;
-            ParamDictionary = paramDictionary;
-        }
+        { Uri = uri;  ParamDictionary = paramDictionary; }
 
         //Connect to a web service and retrieve the data (JSON format) using the GET verb
         public async Task<HttpResponseMessage> GET_JsonFromWebApi()
         {
             if (null != Uri)
             {
-                using (HttpClient = new HttpClient())
-                { HttpResponse = await HttpClient.GetAsync(new Uri(Uri)); }
-                return HttpResponse;
+                using (var HttpClient = new HttpClient())
+                {
+                    return await HttpClient.GetAsync(new Uri(Uri));
+                }
             }
             else
             { return null; }
@@ -42,15 +40,15 @@ namespace PiClock.classes
         {
             if (null != Uri && null != ParamDictionary)
             {
-                using (HttpClient = new HttpClient())
+                using (var HttpClient = new HttpClient())
                 {
-                    using (HttpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(Uri)))
+                    using (var HttpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(Uri)))
                     {
                         HttpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
-                        HttpResponse = await HttpClient.SendAsync(HttpRequest);
+                        return await HttpClient.SendAsync(HttpRequest);
                     }
                 }
-                return HttpResponse;
+                
             }
             else
             { return null; }

@@ -1,41 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace PiClock
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A launcher to allow a user to either configure settings or launch the timeclock
     /// </summary>
     public sealed partial class Launcher : Page
     {
         public Launcher()
-        {
-            this.InitializeComponent();
-        }
-      
+        { InitializeComponent(); }
 
+        //Configuration Button Event
         private void button_Config_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(Configuration), null);
-        }
+        { Frame.Navigate(typeof(Configuration), null); }
 
+        //Timeclock Button Event
         private void button_TimeClock_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(MainPage), null);
-        }
+        { Frame.Navigate(typeof(MainPage), null); }
     }
 }

@@ -35,9 +35,7 @@ namespace PiClock
         { Frame.Navigate(typeof(MainPage), null); }
 
         private string BuildListViewRow(Employee employee)
-        {
-            return String.Format("{0}", FormatFullName(employee));
-        }
+        { return String.Format("{0}", FormatFullName(employee)); }
 
         private string FormatFullName(Employee employee)
         { return string.Format("{0} {1} {2}", employee.fname, employee.mname, employee.lname); }
@@ -70,7 +68,20 @@ namespace PiClock
                 { currentJob = JsonConvert.DeserializeObject<Job>(result); }
             }
             string jobDescription = (null != currentJob) ? currentJob.Description : "None";
-            textBlock.Text = String.Format("ID: {0}\nName: {1}\nLogged In: {2}", name.Tag.ToString(), name.Content.ToString(), (true == isLoggedIn) ? "Yes (" + jobDescription + ")" : "No");
+            textBlock.Text = String.Format("ID: {0}\nName: {1}\nLogged In: {2}", name.Tag.ToString(),
+                                                                                 name.Content.ToString(),
+                                                                                 (true == isLoggedIn) ? "Yes (" + jobDescription + ")" : "No"
+                                                                                 );
+        }
+
+        private async Task<Job> CheckCurrentJob()
+        {
+            return new Job();
+        }
+
+        private async Task<string> TryCheckCurrentJob()
+        {
+            return null;
         }
     }
 

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PiClock.classes
@@ -20,25 +22,37 @@ namespace PiClock.classes
             return true;
         }
 
-        ////Public-Facing method to call a webservice and return some string data (WebService will return JSON)
-        ////Employee object is required (Probably a bad idea for some calls)
-        //public static async Task<string> CallWebService(string[] requiredParams = null, Employee employee = null, Dictionary<string, string> paramDictionary = null)
-        //{
-        //    if (true == CheckForRequiredParams(requiredParams, paramDictionary) &&
-        //        null != employee &&
-        //        null != paramDictionary
-        //        )
-        //    { return await ReturnStringFromWebService(paramDictionary); }
-        //    else
-        //    { return null; }
-        //}
+        public static void HandleDeserializationError(object sender, ErrorEventArgs errorArgs)
+        {
+            var currentError = errorArgs.ErrorContext.Error.Message;
+            errorArgs.ErrorContext.Handled = true;
+        }
 
         //Used to read a from a webservice that returns a JSON string
         public static async Task<string> ReturnStringFromWebService(Dictionary<string, string> paramDictionary = null)
         {
-            var wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), paramDictionary);
-            HttpResponseMessage httpResponse = await wsCall.POST_JsonToWebApi();
-            return await httpResponse.Content.ReadAsStringAsync();
+            try
+            {
+                var wsCall = new WebServiceCall(Settings.UriPrefix, paramDictionary);
+                HttpResponseMessage httpResponse = await wsCall.POST_JsonToWebApi();
+                return await httpResponse.Content.ReadAsStringAsync();
+            }
+            catch (HttpRequestException ex)
+            { return ex.Message; }
         }
+
+        public static string ValidateSimpleString(string stringToValidate = null, int minLength = 0, int maxLength = 0, bool allowNumerals = false)
+        {
+            string regex = (true == allowNumerals) ? @"\w[a-zA-Z0-9_-]" : @"\w[a-zA-Z_-]";
+            if (!Regex.IsMatch(stringToValidate, regex))
+            { return null; }
+            if (minLength > stringToValidate.Length || maxLength < stringToValidate.Length)
+            { return null; }
+            return stringToValidate;
+        }
+
+        //Check to ensure a setting value is not null, and if it is return an empty string
+        public static string ConvertNullStringToEmptyString(string stringToConvert = null)
+        { return stringToConvert = (null != stringToConvert) ? stringToConvert : ""; }
     }
 }

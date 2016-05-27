@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace PiClock.classes
@@ -27,8 +28,9 @@ namespace PiClock.classes
 
         //Read all the setting and pass them to this instance
         //If the setting does not exist, it will set the field to a null value
-        public static void ReadAllSettings()
+        public static void ReadLocalSettings()
         {
+            //TODO: Write a function to clean this up.  Consider using an Enum.
             PinLength = ValidateSetting("PinLength");
             ApiServerAddress = ValidateSetting("ApiServerAddress");
             ApiServerPort = ValidateSetting("ApiServerPort");
@@ -65,17 +67,37 @@ namespace PiClock.classes
         //Try to parse the string value of PinLength to an int.  If it can't, return a 0 value
         public static int ConvertStringToInt(string settingValue)
         {
-            int value = (Int32.TryParse(settingValue, out value)) ?
-                    value :
-                    0;
+            int value = (Int32.TryParse(settingValue, out value)) ? value : 0;
             return value;
         }
     }
 
-    class SettingsFromDB
+    public class DbSettings
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
+    }
+
+    static class SettingsFromDB
+    {
+        public async static Task<string> GetSettingsFromDb()
+        {
+            if (null != Settings.UriPrefix && null != Settings.ParamDictionary)
+            {
+                string[] requiredParams = { "action" };
+                return await CallWebService(requiredParams);
+            }
+            else
+            { return null; }
+        }
+
+        private async static Task<string> CallWebService(string[] requiredParams = null)
+        {
+            if (true == CommonMethods.CheckForRequiredParams(requiredParams, Settings.ParamDictionary))
+            { return await CommonMethods.ReturnStringFromWebService(Settings.ParamDictionary); }
+            else
+            { return null; }
+        }
     }
 }
