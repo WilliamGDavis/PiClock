@@ -11,20 +11,75 @@
         <CollectionViewSource x:Name="cvs1" />
         <CollectionViewSource x:Name="cvs2" />
         <CollectionViewSource x:Name="cvs3" />
+        <Style x:Key="HubStyle1" TargetType="Hub">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12,12,12,0"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlPageTextBaseHighBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Hub">
+                        <Grid BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="OrientationStates">
+                                    <VisualState x:Name="Horizontal"/>
+                                    <VisualState x:Name="Vertical">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="HorizontalScrollMode" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Disabled"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="HorizontalScrollBarVisibility" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Hidden"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="VerticalScrollMode" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Auto"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="VerticalScrollBarVisibility" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Auto"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Row)" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.RowSpan)" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="ScrollViewer">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,20,0,0"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ScrollViewer x:Name="ScrollViewer" HorizontalScrollMode="Auto" HorizontalSnapPointsAlignment="Near" HorizontalSnapPointsType="OptionalSingle" HorizontalScrollBarVisibility="Auto" Grid.RowSpan="2" VerticalSnapPointsType="OptionalSingle" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" VerticalSnapPointsAlignment="Near" ZoomMode="Disabled">
+                                <ItemsStackPanel x:Name="Panel" CacheLength="20" Orientation="{TemplateBinding Orientation}"/>
+                            </ScrollViewer>
+                            <Border x:Name="HeaderHost" Padding="{TemplateBinding Padding}" Grid.Row="0">
+                                <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}" FontWeight="{ThemeResource HubHeaderThemeFontWeight}" FontSize="{ThemeResource HubHeaderThemeFontSize}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" OpticalMarginAlignment="TrimSideBearings"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Hub Header="" x:Name="hubInfo">
-            <HubSection Header="Today's Punches" Width="200">
+        <Hub Header="Will Davis" x:Name="hubInfo" Style="{Binding HubStyle1}" Padding="12,0">
+            <HubSection Header="Today's Punches" Width="200" Padding="12,0">
                 <DataTemplate>
                     <ListView x:Name="ListView1" SelectionMode="None" ItemsSource="{Binding Source={StaticResource cvs1}}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="200" Padding="0,0,0,0">
-                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="0,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
-                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
+                                    <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="200" Margin="0,5,0,0">
+                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="5,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
+                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
+                                        <TextBlock Text="{Binding Line3}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
@@ -32,15 +87,16 @@
                     </ListView>
                 </DataTemplate>
             </HubSection>
-            <HubSection Header="Today's Jobs" Width="200">
+            <HubSection Header="Today's Jobs" Width="200" Padding="12,0" UseLayoutRounding="False">
                 <DataTemplate>
                     <ListView x:Name="ListView2" SelectionMode="None" ItemsSource="{Binding Source={StaticResource cvs2}}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="200" IsTapEnabled="False">
-                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="0,0,0,0"/>
-                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,0,0"/>
+                                    <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="200" Margin="0,5,0,0">
+                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="5,0,0,0"/>
+                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0"/>
+                                        <TextBlock Text="{Binding Line3}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0"/>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
@@ -48,15 +104,15 @@
                     </ListView>
                 </DataTemplate>
             </HubSection>
-            <HubSection Header="Weekly Total" Width="280">
+            <HubSection x:Name="hubSection_WeeklyTotal" Header="" Width="280" Padding="12,0">
                 <DataTemplate>
                     <ListView x:Name="ListView3" SelectionMode="None" ItemsSource="{Binding Source={StaticResource cvs3}}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <StackPanel Orientation="Horizontal" Background="LightGray" Width="160" Height="160">
-                                        <TextBlock Text="{Binding Name}" FontSize="14" FontFamily="Segoe UI" Margin="0,0,0,0"/>
-                                        <TextBlock Text="{Binding Color}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,0,0"/>
+                                    <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="280" Margin="0,5,0,0">
+                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="5,0,0,0"/>
+                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0"/>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>

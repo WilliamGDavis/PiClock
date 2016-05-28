@@ -37,6 +37,12 @@ namespace PiClock.classes
             return await CallWebService(requiredParams);
         }
 
+        public async Task<string> GetThisWeeksPunchesByEmployeeId()
+        {
+            string[] requiredParams = { "action", "employeeId" };
+            return await CallWebService(requiredParams);
+        }
+
 
         private async Task<string> CallWebService(string[] requiredParams = null)
         {
@@ -57,19 +63,31 @@ namespace PiClock.classes
         public List<JobPunchesOpen> JobPunchesOpen{ get; set; }
     }
 
+    class EmployeePunchesForTheWeek
+    {
+        public List<WeekdayPunch> WeekdayPunches { get; set; }
+    }
+
+    class WeekdayPunch
+    {
+        public string DayName { get; set; }
+        public double? DurationInSeconds { get; set; }
+        //public DateTime? MaxPunch { get; set; }
+    }
+
     class RegularPunchesPaired
     {
         public string Id_ParentPunch { get; set; }
         public string Id_ChildPunch { get; set; }
-        public DateTime TimeStampIn { get; set; }
-        public DateTime TimeStampOut { get; set; }
+        public DateTime DateTimeIn { get; set; }
+        public DateTime DateTimeOut { get; set; }
     }
 
     class RegularPunchesOpen
     {
         public string Id { get; set; }
         public string Id_ParentPunch { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime DateTime { get; set; }
         public string Type { get; set; }
     }
 
@@ -77,16 +95,18 @@ namespace PiClock.classes
     {
         public string Id_ParentPunch { get; set; }
         public string Id_ChildPunch { get; set; }
-        public DateTime TimeStampIn { get; set; }
-        public DateTime TimeStampOut { get; set; }
+        public string JobDescription { get; set; }
+        public DateTime DateTimeIn { get; set; }
+        public DateTime DateTimeOut { get; set; }
     }
 
     class JobPunchesOpen
     {
         public string Id { get; set; }
         public string Id_Jobs { get; set; }
+        public string JobDescription { get; set; }
         public string Id_ParentPunch { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime DateTime { get; set; }
         public string Type { get; set; }
     }
 
