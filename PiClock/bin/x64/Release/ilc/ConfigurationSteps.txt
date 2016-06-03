@@ -1,0 +1,1 @@
+﻿1) Make sure that the timezone is set on the Raspberry Pi using the web interface (Deafult Credentials: admin/p@ssw0rd)

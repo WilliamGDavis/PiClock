@@ -27,6 +27,8 @@ namespace PiClock
             textBox_ApiDirectory.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiDirectory);
             if ("s" == CommonMethods.ConvertNullStringToEmptyString(Settings.UseSsl))
             { checkBox_UseSsl.IsChecked = true; }
+            if ("true" == CommonMethods.ConvertNullStringToEmptyString(Settings.AllowPunchIntoJobWhenPunchingIn))
+            { checkBox_AllowJobPunchWhenPunchingIn.IsChecked = true; }
 
             IsEnabled = true;
         }
@@ -154,15 +156,21 @@ namespace PiClock
         //Write settings to local settings
         private void WriteSettings(List<DbSettings> dbSettings = null)
         {
+            string apiServerAddress = CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true);
+            string apiServerPort = CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true);
+            string apiDirectory = CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true);
+            string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
+            string allowPunchIntoJobWhenPunchingIn = (true == checkBox_AllowJobPunchWhenPunchingIn.IsChecked) ? "true" : "false";
             var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("ApiServerAddress", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true));
-            paramDictionary.Add("ApiServerPort", CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true));
-            paramDictionary.Add("ApiDirectory", CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true));
-            paramDictionary.Add("UseSsl", (true == checkBox_UseSsl.IsChecked) ? "s" : "");
-            paramDictionary.Add("UriPrefix", String.Format("http://{0}{1}:{2}{3}", paramDictionary["ApiServerAddress"],
-                                                                                   paramDictionary["UseSsl"],
-                                                                                   paramDictionary["ApiServerPort"],
-                                                                                   paramDictionary["ApiDirectory"]));
+            paramDictionary.Add("ApiServerAddress", apiServerAddress);
+            paramDictionary.Add("ApiServerPort", apiServerPort);
+            paramDictionary.Add("ApiDirectory", apiDirectory);
+            paramDictionary.Add("UseSsl", useSsl);
+            paramDictionary.Add("AllowPunchIntoJobWhenPunchingIn", allowPunchIntoJobWhenPunchingIn); 
+            paramDictionary.Add("UriPrefix", String.Format("http{0}://{1}:{2}/{3}", useSsl,
+                                                                                    apiServerAddress,
+                                                                                    apiServerPort,
+                                                                                    apiDirectory));
 
             //Write settings collected from the database to the application settings file
             if (null != dbSettings)

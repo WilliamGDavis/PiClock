@@ -450,3 +450,8 @@ C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.g.cs
 C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.xaml
 C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\Employee_Info.xbf
 C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\Employee_Info.xbf
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Debug\PunchIntoJobConfirmation.xbf
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\PunchIntoJobConfirmation.g.i.cs
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\PunchIntoJobConfirmation.g.cs
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\PunchIntoJobConfirmation.xaml
+C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Debug\PunchIntoJobConfirmation.xbf

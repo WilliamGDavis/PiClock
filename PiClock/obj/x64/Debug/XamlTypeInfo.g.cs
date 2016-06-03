@@ -132,7 +132,7 @@ namespace PiClock.PiClock_XamlTypeInfo
 
         private void InitTypeTables()
         {
-            _typeNameTable = new string[9];
+            _typeNameTable = new string[10];
             _typeNameTable[0] = "PiClock.Employee_Info";
             _typeNameTable[1] = "Windows.UI.Xaml.Controls.Page";
             _typeNameTable[2] = "Windows.UI.Xaml.Controls.UserControl";
@@ -141,9 +141,10 @@ namespace PiClock.PiClock_XamlTypeInfo
             _typeNameTable[5] = "PiClock.Launcher";
             _typeNameTable[6] = "PiClock.EmployeePage";
             _typeNameTable[7] = "PiClock.MainPage";
-            _typeNameTable[8] = "PiClock.QuickView";
+            _typeNameTable[8] = "PiClock.PunchIntoJobConfirmation";
+            _typeNameTable[9] = "PiClock.QuickView";
 
-            _typeTable = new global::System.Type[9];
+            _typeTable = new global::System.Type[10];
             _typeTable[0] = typeof(global::PiClock.Employee_Info);
             _typeTable[1] = typeof(global::Windows.UI.Xaml.Controls.Page);
             _typeTable[2] = typeof(global::Windows.UI.Xaml.Controls.UserControl);
@@ -152,7 +153,8 @@ namespace PiClock.PiClock_XamlTypeInfo
             _typeTable[5] = typeof(global::PiClock.Launcher);
             _typeTable[6] = typeof(global::PiClock.EmployeePage);
             _typeTable[7] = typeof(global::PiClock.MainPage);
-            _typeTable[8] = typeof(global::PiClock.QuickView);
+            _typeTable[8] = typeof(global::PiClock.PunchIntoJobConfirmation);
+            _typeTable[9] = typeof(global::PiClock.QuickView);
         }
 
         private int LookupTypeIndexByName(string typeName)
@@ -193,7 +195,8 @@ namespace PiClock.PiClock_XamlTypeInfo
         private object Activate_5_Launcher() { return new global::PiClock.Launcher(); }
         private object Activate_6_EmployeePage() { return new global::PiClock.EmployeePage(); }
         private object Activate_7_MainPage() { return new global::PiClock.MainPage(); }
-        private object Activate_8_QuickView() { return new global::PiClock.QuickView(); }
+        private object Activate_8_PunchIntoJobConfirmation() { return new global::PiClock.PunchIntoJobConfirmation(); }
+        private object Activate_9_QuickView() { return new global::PiClock.QuickView(); }
 
         private global::Windows.UI.Xaml.Markup.IXamlType CreateXamlType(int typeIndex)
         {
@@ -255,9 +258,16 @@ namespace PiClock.PiClock_XamlTypeInfo
                 xamlType = userType;
                 break;
 
-            case 8:   //  PiClock.QuickView
+            case 8:   //  PiClock.PunchIntoJobConfirmation
                 userType = new global::PiClock.PiClock_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
-                userType.Activator = Activate_8_QuickView;
+                userType.Activator = Activate_8_PunchIntoJobConfirmation;
+                userType.SetIsLocalType();
+                xamlType = userType;
+                break;
+
+            case 9:   //  PiClock.QuickView
+                userType = new global::PiClock.PiClock_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Windows.UI.Xaml.Controls.Page"));
+                userType.Activator = Activate_9_QuickView;
                 userType.SetIsLocalType();
                 xamlType = userType;
                 break;

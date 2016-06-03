@@ -13,6 +13,7 @@ namespace PiClock.classes
         public static string ApiDirectory { get; set; }
         public static string UriPrefix { get; set; }
         public static string UseSsl { get; set; }
+        public static string AllowPunchIntoJobWhenPunchingIn { get; set; }
         public static Dictionary<string, string> ParamDictionary { get; set; } //Dictionary of all the application settings, set application-side
         private readonly static ApplicationDataContainer SettingsLocation = ApplicationData.Current.LocalSettings; //Use the application's "LocalSettings" folder to hold the settings values
 
@@ -37,6 +38,7 @@ namespace PiClock.classes
             ApiDirectory = ValidateSetting("ApiDirectory");
             UriPrefix = ValidateSetting("UriPrefix");
             UseSsl = ValidateSetting("UseSsl");
+            AllowPunchIntoJobWhenPunchingIn = ValidateSetting("AllowPunchIntoJobWhenPunchingIn");
         }
 
         //Write an individial value to settings

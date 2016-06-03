@@ -9,59 +9,59 @@
     <SolutionConfiguration>Release|x64</SolutionConfiguration>
     <PackageArchitecture>x64</PackageArchitecture>
     <PackageIdentityName>70a847e4-1a18-4e59-ac6c-a4035284a40a</PackageIdentityName>
-    <IntermediateOutputPath>C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\ApplicationInsights.config">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\ApplicationInsights.config">
       <PackagePath>ApplicationInsights.config</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\ClrCompression.dll">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\ClrCompression.dll">
       <PackagePath>ClrCompression.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\PiClock.dll">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\ConfigurationSteps.txt">
+      <PackagePath>ConfigurationSteps.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\PiClock.dll">
       <PackagePath>PiClock.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\PiClock.exe">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\PiClock.exe">
       <PackagePath>PiClock.exe</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\resources.pri">
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\bin\x64\Release\ilc\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\bin\x64\Release\ilc\Settings.xml">
-      <PackagePath>Settings.xml</PackagePath>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

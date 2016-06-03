@@ -6,10 +6,10 @@
 "/nativelink:C:\Program Files (x86)\MSBuild\Microsoft\.NetNative\x64\ilc\lib\Native\vmath.lib"
 /customImports
 /methodBodyFolding
-"C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Release\ilc\intermediate\MDIL\PiClock.mdilexe"
-"/i:C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Release\ilc\intermediate\MDIL\"
-/out:"C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Release\ilc\intermediate\Native\PiClock.exe"
-"/res:C:\Users\Owner\documents\visual studio 2015\Projects\PiClock\PiClock\obj\x64\Release\ilc\intermediate\Native.res"
+"C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Release\ilc\intermediate\MDIL\PiClock.mdilexe"
+"/i:C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Release\ilc\intermediate\MDIL\"
+/out:"C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Release\ilc\intermediate\Native\PiClock.exe"
+"/res:C:\Users\Owner\Documents\GitHub\PiClock\PiClock\obj\x64\Release\ilc\intermediate\Native.res"
 "/i:C:\Program Files (x86)\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.NET.Native.Framework.1.2\1.2\x64\ret\MDIL"
 /shimexe
 /classlib:SharedLibrary

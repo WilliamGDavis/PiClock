@@ -48,13 +48,13 @@ namespace PiClock
             else
             { textBlock_CurrentPunch.Text = "Not Logged In"; }
         }
-        
+
         //Check to see if a user is currently logged in
         private async Task CheckLoginStatus()
         {
             if (true == await TryCheckLoginStatus())
             { LoggedIn = true; }
-            else 
+            else
             { LoggedIn = false; }
         }
 
@@ -63,23 +63,40 @@ namespace PiClock
 
         private async void button_PunchIn_Click(object sender, RoutedEventArgs e)
         {
-            //Display a message box allowing a user to punch directly into a job number, or no job number
-            //If a user chooses to punch into a job number, take them to the ChangeJob page
-            //If not, punch them in and take them back to the Main screen
-            if (true == await AskToPunchIntoJob())
-            { Frame.Navigate(typeof(ChangeJob), Employee); }
-            else
+            //////////////////////////////////////// DO NOT DELETE ////////////////////////////////////////////////////
+            ////TODO: Convert to a custom page, as Windows.UI.Core.CoreWindowDialog and Windows.UI.Popups.MessageDialog are not implemented in Windows IOT yet
+            ////Note: Keep this functionality in the application, just commented out.  It will be available eventually
+            ////Display a message box allowing a user to punch directly into a job number, or no job number
+            ////If a user chooses to punch into a job number, take them to the ChangeJob page
+            ////If not, punch them in and take them back to the Main screen
+            //if (true == await AskToPunchIntoJob())
+            //{ Frame.Navigate(typeof(ChangeJob), Employee); }
+            //else
+            //{
+            //    //If a PunchIn is successful, take the user back to the main page
+            //    //If not, display an error
+            //    if (true == await TryPunchIn())
+            //    { Frame.Navigate(typeof(MainPage), null); }
+            //    else
+            //    {
+            //        textBlock_CurrentPunch.Text = "An Error occured";
+            //        return;
+            //    }
+            //}
+            //////////////////////////////////////// DO NOT DELETE ////////////////////////////////////////////////////
+
+            //If a PunchIn is successful, take the user back to the main page or the JobChange page, depending on wheter or not the AllowPunchIntoJobWhenPunchingIn settings is true
+            //If not, display an error
+            if (false == await TryPunchIn())
             {
-                //If a PunchIn is successful, take the user back to the main page
-                //If not, display an error
-                if (true == await TryPunchIn())
-                { Frame.Navigate(typeof(MainPage), null); }
-                else
-                {
-                    textBlock_CurrentPunch.Text = "An Error occured";
-                    return;
-                }
+                textBlock_CurrentPunch.Text = "An Error occured";
+                return;
             }
+
+            if("true" == Settings.AllowPunchIntoJobWhenPunchingIn)
+            { Frame.Navigate(typeof(PunchIntoJobConfirmation), Employee); }
+            else
+            { Frame.Navigate(typeof(MainPage), null); }
         }
 
         //TODO: Consider whether or not to punch in a user if they clicked to punch into a job, but cancelled before typing in a job number

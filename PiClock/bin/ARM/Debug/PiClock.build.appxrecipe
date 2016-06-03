@@ -345,6 +345,9 @@
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\ApplicationInsights.config">
       <PackagePath>ApplicationInsights.config</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\ConfigurationSteps.txt">
+      <PackagePath>ConfigurationSteps.txt</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Owner\Documents\GitHub\PiClock\PiClock\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
     </AppxPackagedFile>

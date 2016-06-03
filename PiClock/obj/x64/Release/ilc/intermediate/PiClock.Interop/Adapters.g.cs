@@ -526,6 +526,314 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 	    #endregion Helpers
 	}
 
+	public static class DictionaryToMapAdapter 
+	{
+	    // V Lookup(K key)
+	    public static V Lookup<K, V>(
+	        global::System.Collections.Generic.IDictionary<K,V> _this, 
+	        K key)
+	    {
+	        try
+	        {
+	            return _this[key];
+	        }
+	        catch(KeyNotFoundException ex)
+	        {
+	            // Change error code to match what WinRT expects
+	            McgMarshal.SetExceptionErrorCode(ex, global::McgInterop.McgHelpers.__HResults.E_BOUNDS);
+	            throw;
+	        }
+	    }
+
+	    // uint Size { get }
+	    public static uint get_Size<K, V>(
+	        global::System.Collections.Generic.IDictionary<K,V> _this
+	        )
+	    {
+	        return (uint)_this.Count;
+	    }
+
+	    // bool HasKey(K key)
+	    public static bool HasKey<K, V>(
+	        global::System.Collections.Generic.IDictionary<K, V> _this, 
+	        K key)
+	    {
+	        return _this.ContainsKey(key);
+	    }
+
+	    // IMapView<K, V> GetView()
+	    public static global::System.Collections.Generic.IReadOnlyDictionary<K, V> GetView<K, V>(
+	        global::System.Collections.Generic.IDictionary<K,V> _this
+	        )
+	    {
+	        //Contract.Assert(_this != null);
+
+	        // Note: This dictionary is not really read-only - you could QI for a modifiable
+	        // dictionary.  We gain some perf by doing this.  We believe this is acceptable.
+	        global::System.Collections.Generic.IReadOnlyDictionary<K, V> roDictionary = _this as global::System.Collections.Generic.IReadOnlyDictionary<K, V>;
+	        
+	        if (roDictionary == null)
+	        {
+	            roDictionary = new global::System.Collections.ObjectModel.ReadOnlyDictionary<K, V>(_this);
+	        }
+	        
+	        return roDictionary;
+	    }
+
+	    // bool Insert(K key, V value)
+	    public static bool Insert<K, V>(global::System.Collections.Generic.IDictionary<K, V> _this, 
+	        K key, 
+	        V value)
+	    {
+	        bool replacing = _this.ContainsKey(key);
+	        _this[key] = value;
+	        return replacing;
+	    }
+
+	    // void Remove(K key)
+	    public static void Remove<K, V>(
+	        global::System.Collections.Generic.IDictionary<K, V> _this, 
+	        K key)
+	    {
+	        if (! _this.Remove(key))
+	        {
+	            throw global::McgInterop.Helpers.NewException_CollectionsGeneric_KeyNotFoundException_BOUNDS();
+	        }
+	    }
+
+	    // void Clear()
+	    public static void Clear<K, V>(
+	        global::System.Collections.Generic.IDictionary<K,V> _this
+	        )
+	    {
+	        _this.Clear();
+	    }
+	}
+
+
+	public sealed class DictionaryKeyCollection<TKey, TValue> : global::System.Collections.Generic.ICollection<TKey>
+	{
+	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
+
+	    public DictionaryKeyCollection(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
+	    {
+	        if (dictionary == null)
+	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
+
+	        this.dictionary = dictionary;
+	    }
+
+	    public void CopyTo(TKey[] array, int index)
+	    {
+	        global::System.Exception error = global::McgInterop.McgHelpers.CheckCopyTo(dictionary.Count, array, index);
+
+	        if (error != null)
+	        {
+	            throw error;
+	        }
+
+	        int i = index;
+	        foreach (global::System.Collections.Generic.KeyValuePair<TKey, TValue> mapping in dictionary)
+	        {
+	            array[i++] = mapping.Key;
+	        }
+	    }
+
+	    public int Count
+	    {
+	        get { return dictionary.Count; }
+	    }
+
+	    bool global::System.Collections.Generic.ICollection<TKey>.IsReadOnly
+	    {
+	        get { return true; }
+	    }
+
+	    void global::System.Collections.Generic.ICollection<TKey>.Add(TKey item)
+	    {
+	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_KeyCollectionSet));
+	    }
+
+	    void global::System.Collections.Generic.ICollection<TKey>.Clear()
+	    {
+	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_KeyCollectionSet));
+	    }
+
+	    public bool Contains(TKey item)
+	    {
+	        return dictionary.ContainsKey(item);
+	    }
+
+	    bool global::System.Collections.Generic.ICollection<TKey>.Remove(TKey item)
+	    {
+	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_KeyCollectionSet));
+	    }
+
+	    global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
+	    {
+	        return ((System.Collections.Generic.IEnumerable<TKey>)this).GetEnumerator();
+	    }
+
+	    public global::System.Collections.Generic.IEnumerator<TKey> GetEnumerator()
+	    {
+	        return new DictionaryKeyEnumerator<TKey, TValue>(dictionary);
+	    }
+	}  // public class DictionaryKeyCollection<TKey, TValue>
+
+
+	internal sealed class DictionaryKeyEnumerator<TKey, TValue> : global::System.Collections.Generic.IEnumerator<TKey>
+	{
+	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
+	    private global::System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<TKey, TValue>> enumeration;
+
+	    public DictionaryKeyEnumerator(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
+	    {
+	        if (dictionary == null)
+	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
+
+	        this.dictionary = dictionary;
+	        this.enumeration = dictionary.GetEnumerator();
+	    }
+
+	    void global::System.IDisposable.Dispose()
+	    {
+	        enumeration.Dispose();
+	    }
+
+	    public bool MoveNext()
+	    {
+	        return enumeration.MoveNext();
+	    }
+
+	    global::System.Object global::System.Collections.IEnumerator.Current
+	    {
+	        get { return ((System.Collections.Generic.IEnumerator<TKey>)this).Current; }
+	    }
+
+	    public TKey Current
+	    {
+	        get { return enumeration.Current.Key; }
+	    }
+
+	    public void Reset()
+	    {
+	        enumeration = dictionary.GetEnumerator();
+	    }
+	}  // class DictionaryKeyEnumerator<TKey, TValue>
+
+	internal sealed class DictionaryValueCollection<TKey, TValue> : global::System.Collections.Generic.ICollection<TValue>
+	{
+	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
+
+	    public DictionaryValueCollection(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
+	    {
+	        if (dictionary == null)
+	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
+
+	        this.dictionary = dictionary;
+	    }
+
+	    public void CopyTo(TValue[] array, int index)
+	    {
+	        global::System.Exception error = global::McgInterop.McgHelpers.CheckCopyTo(dictionary.Count, array, index);
+
+	        if (error != null)
+	        {
+	            throw error;
+	        }
+
+	        int i = index;
+	        foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> mapping in dictionary)
+	        {
+	            array[i++] = mapping.Value;
+	        }
+	    }
+
+	    public int Count
+	    {
+	        get { return dictionary.Count; }
+	    }
+
+	    bool global::System.Collections.Generic.ICollection<TValue>.IsReadOnly
+	    {
+	        get { return true; }
+	    }
+
+	    void global::System.Collections.Generic.ICollection<TValue>.Add(TValue item)
+	    {
+	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_ValueCollectionSet));
+	    }
+
+	    void global::System.Collections.Generic.ICollection<TValue>.Clear()
+	    {
+	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_ValueCollectionSet));
+	    }
+
+	    public bool Contains(TValue item)
+	    {
+	        foreach (TValue value in this)
+	            if (global::System.Runtime.InteropServices.McgMarshal.ComparerEquals<TValue>(item, value))
+	                return true;
+	        return false;
+	    }
+
+	    bool global::System.Collections.Generic.ICollection<TValue>.Remove(TValue item)
+	    {
+	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_ValueCollectionSet));
+	    }
+
+	    global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
+	    {
+	        return ((System.Collections.Generic.IEnumerable<TValue>)this).GetEnumerator();
+	    }
+
+	    public global::System.Collections.Generic.IEnumerator<TValue> GetEnumerator()
+	    {
+	        return new DictionaryValueEnumerator<TKey, TValue>(dictionary);
+	    }
+	}  // public class DictionaryValueCollection<TKey, TValue>
+
+
+	internal sealed class DictionaryValueEnumerator<TKey, TValue> : global::System.Collections.Generic.IEnumerator<TValue>
+	{
+	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
+	    private global::System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<TKey, TValue>> enumeration;
+
+	    public DictionaryValueEnumerator(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
+	    {
+	        if (dictionary == null)
+	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
+
+	        this.dictionary = dictionary;
+	        this.enumeration = dictionary.GetEnumerator();
+	    }
+
+	    void global::System.IDisposable.Dispose()
+	    {
+	        enumeration.Dispose();
+	    }
+
+	    public bool MoveNext()
+	    {
+	        return enumeration.MoveNext();
+	    }
+
+	    global::System.Object global::System.Collections.IEnumerator.Current
+	    {
+	        get { return ((System.Collections.Generic.IEnumerator<TValue>)this).Current; }
+	    }
+
+	    public TValue Current
+	    {
+	        get { return enumeration.Current.Value; }
+	    }
+
+	    public void Reset()
+	    {
+	        enumeration = dictionary.GetEnumerator();
+	    }
+	}  // class DictionaryValueEnumerator<TKey, TValue>
+
 	public static class ReadOnlyDictionaryToMapViewAdapter 
 	{
 	    // V Lookup(K key)
@@ -990,313 +1298,5 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 	    #endregion IKeyValuePair Enumerator
 
 	}  // internal ConstantSplittableMap<TKey, TValue>
-
-	public static class DictionaryToMapAdapter 
-	{
-	    // V Lookup(K key)
-	    public static V Lookup<K, V>(
-	        global::System.Collections.Generic.IDictionary<K,V> _this, 
-	        K key)
-	    {
-	        try
-	        {
-	            return _this[key];
-	        }
-	        catch(KeyNotFoundException ex)
-	        {
-	            // Change error code to match what WinRT expects
-	            McgMarshal.SetExceptionErrorCode(ex, global::McgInterop.McgHelpers.__HResults.E_BOUNDS);
-	            throw;
-	        }
-	    }
-
-	    // uint Size { get }
-	    public static uint get_Size<K, V>(
-	        global::System.Collections.Generic.IDictionary<K,V> _this
-	        )
-	    {
-	        return (uint)_this.Count;
-	    }
-
-	    // bool HasKey(K key)
-	    public static bool HasKey<K, V>(
-	        global::System.Collections.Generic.IDictionary<K, V> _this, 
-	        K key)
-	    {
-	        return _this.ContainsKey(key);
-	    }
-
-	    // IMapView<K, V> GetView()
-	    public static global::System.Collections.Generic.IReadOnlyDictionary<K, V> GetView<K, V>(
-	        global::System.Collections.Generic.IDictionary<K,V> _this
-	        )
-	    {
-	        //Contract.Assert(_this != null);
-
-	        // Note: This dictionary is not really read-only - you could QI for a modifiable
-	        // dictionary.  We gain some perf by doing this.  We believe this is acceptable.
-	        global::System.Collections.Generic.IReadOnlyDictionary<K, V> roDictionary = _this as global::System.Collections.Generic.IReadOnlyDictionary<K, V>;
-	        
-	        if (roDictionary == null)
-	        {
-	            roDictionary = new global::System.Collections.ObjectModel.ReadOnlyDictionary<K, V>(_this);
-	        }
-	        
-	        return roDictionary;
-	    }
-
-	    // bool Insert(K key, V value)
-	    public static bool Insert<K, V>(global::System.Collections.Generic.IDictionary<K, V> _this, 
-	        K key, 
-	        V value)
-	    {
-	        bool replacing = _this.ContainsKey(key);
-	        _this[key] = value;
-	        return replacing;
-	    }
-
-	    // void Remove(K key)
-	    public static void Remove<K, V>(
-	        global::System.Collections.Generic.IDictionary<K, V> _this, 
-	        K key)
-	    {
-	        if (! _this.Remove(key))
-	        {
-	            throw global::McgInterop.Helpers.NewException_CollectionsGeneric_KeyNotFoundException_BOUNDS();
-	        }
-	    }
-
-	    // void Clear()
-	    public static void Clear<K, V>(
-	        global::System.Collections.Generic.IDictionary<K,V> _this
-	        )
-	    {
-	        _this.Clear();
-	    }
-	}
-
-
-	public sealed class DictionaryKeyCollection<TKey, TValue> : global::System.Collections.Generic.ICollection<TKey>
-	{
-	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
-
-	    public DictionaryKeyCollection(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
-	    {
-	        if (dictionary == null)
-	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
-
-	        this.dictionary = dictionary;
-	    }
-
-	    public void CopyTo(TKey[] array, int index)
-	    {
-	        global::System.Exception error = global::McgInterop.McgHelpers.CheckCopyTo(dictionary.Count, array, index);
-
-	        if (error != null)
-	        {
-	            throw error;
-	        }
-
-	        int i = index;
-	        foreach (global::System.Collections.Generic.KeyValuePair<TKey, TValue> mapping in dictionary)
-	        {
-	            array[i++] = mapping.Key;
-	        }
-	    }
-
-	    public int Count
-	    {
-	        get { return dictionary.Count; }
-	    }
-
-	    bool global::System.Collections.Generic.ICollection<TKey>.IsReadOnly
-	    {
-	        get { return true; }
-	    }
-
-	    void global::System.Collections.Generic.ICollection<TKey>.Add(TKey item)
-	    {
-	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_KeyCollectionSet));
-	    }
-
-	    void global::System.Collections.Generic.ICollection<TKey>.Clear()
-	    {
-	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_KeyCollectionSet));
-	    }
-
-	    public bool Contains(TKey item)
-	    {
-	        return dictionary.ContainsKey(item);
-	    }
-
-	    bool global::System.Collections.Generic.ICollection<TKey>.Remove(TKey item)
-	    {
-	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_KeyCollectionSet));
-	    }
-
-	    global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-	    {
-	        return ((System.Collections.Generic.IEnumerable<TKey>)this).GetEnumerator();
-	    }
-
-	    public global::System.Collections.Generic.IEnumerator<TKey> GetEnumerator()
-	    {
-	        return new DictionaryKeyEnumerator<TKey, TValue>(dictionary);
-	    }
-	}  // public class DictionaryKeyCollection<TKey, TValue>
-
-
-	internal sealed class DictionaryKeyEnumerator<TKey, TValue> : global::System.Collections.Generic.IEnumerator<TKey>
-	{
-	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
-	    private global::System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<TKey, TValue>> enumeration;
-
-	    public DictionaryKeyEnumerator(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
-	    {
-	        if (dictionary == null)
-	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
-
-	        this.dictionary = dictionary;
-	        this.enumeration = dictionary.GetEnumerator();
-	    }
-
-	    void global::System.IDisposable.Dispose()
-	    {
-	        enumeration.Dispose();
-	    }
-
-	    public bool MoveNext()
-	    {
-	        return enumeration.MoveNext();
-	    }
-
-	    global::System.Object global::System.Collections.IEnumerator.Current
-	    {
-	        get { return ((System.Collections.Generic.IEnumerator<TKey>)this).Current; }
-	    }
-
-	    public TKey Current
-	    {
-	        get { return enumeration.Current.Key; }
-	    }
-
-	    public void Reset()
-	    {
-	        enumeration = dictionary.GetEnumerator();
-	    }
-	}  // class DictionaryKeyEnumerator<TKey, TValue>
-
-	internal sealed class DictionaryValueCollection<TKey, TValue> : global::System.Collections.Generic.ICollection<TValue>
-	{
-	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
-
-	    public DictionaryValueCollection(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
-	    {
-	        if (dictionary == null)
-	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
-
-	        this.dictionary = dictionary;
-	    }
-
-	    public void CopyTo(TValue[] array, int index)
-	    {
-	        global::System.Exception error = global::McgInterop.McgHelpers.CheckCopyTo(dictionary.Count, array, index);
-
-	        if (error != null)
-	        {
-	            throw error;
-	        }
-
-	        int i = index;
-	        foreach (System.Collections.Generic.KeyValuePair<TKey, TValue> mapping in dictionary)
-	        {
-	            array[i++] = mapping.Value;
-	        }
-	    }
-
-	    public int Count
-	    {
-	        get { return dictionary.Count; }
-	    }
-
-	    bool global::System.Collections.Generic.ICollection<TValue>.IsReadOnly
-	    {
-	        get { return true; }
-	    }
-
-	    void global::System.Collections.Generic.ICollection<TValue>.Add(TValue item)
-	    {
-	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_ValueCollectionSet));
-	    }
-
-	    void global::System.Collections.Generic.ICollection<TValue>.Clear()
-	    {
-	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_ValueCollectionSet));
-	    }
-
-	    public bool Contains(TValue item)
-	    {
-	        foreach (TValue value in this)
-	            if (global::System.Runtime.InteropServices.McgMarshal.ComparerEquals<TValue>(item, value))
-	                return true;
-	        return false;
-	    }
-
-	    bool global::System.Collections.Generic.ICollection<TValue>.Remove(TValue item)
-	    {
-	        throw new NotSupportedException(global::Mcg.System.SR.GetString(global::Mcg.System.SR.Excep_ValueCollectionSet));
-	    }
-
-	    global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-	    {
-	        return ((System.Collections.Generic.IEnumerable<TValue>)this).GetEnumerator();
-	    }
-
-	    public global::System.Collections.Generic.IEnumerator<TValue> GetEnumerator()
-	    {
-	        return new DictionaryValueEnumerator<TKey, TValue>(dictionary);
-	    }
-	}  // public class DictionaryValueCollection<TKey, TValue>
-
-
-	internal sealed class DictionaryValueEnumerator<TKey, TValue> : global::System.Collections.Generic.IEnumerator<TValue>
-	{
-	    private readonly global::System.Collections.Generic.IDictionary<TKey, TValue> dictionary;
-	    private global::System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<TKey, TValue>> enumeration;
-
-	    public DictionaryValueEnumerator(System.Collections.Generic.IDictionary<TKey, TValue> dictionary)
-	    {
-	        if (dictionary == null)
-	            throw global::McgInterop.Helpers.NewException_ArgumentNullException_dictionary();
-
-	        this.dictionary = dictionary;
-	        this.enumeration = dictionary.GetEnumerator();
-	    }
-
-	    void global::System.IDisposable.Dispose()
-	    {
-	        enumeration.Dispose();
-	    }
-
-	    public bool MoveNext()
-	    {
-	        return enumeration.MoveNext();
-	    }
-
-	    global::System.Object global::System.Collections.IEnumerator.Current
-	    {
-	        get { return ((System.Collections.Generic.IEnumerator<TValue>)this).Current; }
-	    }
-
-	    public TValue Current
-	    {
-	        get { return enumeration.Current.Value; }
-	    }
-
-	    public void Reset()
-	    {
-	        enumeration = dictionary.GetEnumerator();
-	    }
-	}  // class DictionaryValueEnumerator<TKey, TValue>
 }
 

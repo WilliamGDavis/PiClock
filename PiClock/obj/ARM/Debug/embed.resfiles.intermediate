@@ -1,7 +1,9 @@
 App.xbf
 ChangeJob.xbf
 Configuration.xbf
-LoggedIn.xbf
+Employee_Info.xbf
+EmployeePage.xbf
 MainPage.xbf
 PiClock.xbf
+PunchIntoJobConfirmation.xbf
 QuickView.xbf

@@ -59,6 +59,13 @@ namespace PiClock
 
         private async void button_ChangeJob_Click(object sender, RoutedEventArgs e)
         {
+            if (textBox_CurrentJob.Text == textBox_NewJob.Text)
+            {
+                textBlock.Text = "You're already punched into this job!";
+                textBox_NewJob.Text = "";
+                return;
+            }
+
             //Find the job the user is currently logged into
             //Settings settings = new Settings();
             string newJobId = await JobLookup();
@@ -66,8 +73,11 @@ namespace PiClock
             if ("null" == newJobId)
             {
                 textBlock.Text = "Job Number does not exist!";
+                textBox_NewJob.Text = "";
                 return;
             }
+
+            
 
             Punch punch = new Punch();
             var paramDictionary = new Dictionary<string, string>();

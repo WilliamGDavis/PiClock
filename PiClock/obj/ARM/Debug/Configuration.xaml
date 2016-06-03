@@ -9,20 +9,17 @@
                         >
 
     <Grid x:ConnectionId='2' Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"                     >
-        <TextBox x:ConnectionId='3' x:Name="textBox_PinLength" HorizontalAlignment="Left" Margin="10,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" Header="PIN Length"/>
-        <Button x:ConnectionId='4' x:Name="button_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="526,390,0,0" VerticalAlignment="Top" Width="115"                            />
-        <Button x:ConnectionId='5' x:Name="button_SaveChanges" Content="Save Changes" HorizontalAlignment="Left" Margin="646,390,0,0" VerticalAlignment="Top" Width="115"                                 />
-        <TextBox x:ConnectionId='6' x:Name="textBox_ApiDirectory" HorizontalAlignment="Left" Margin="10,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392" Header="API Directory"/>
-        <Button x:ConnectionId='7' x:Name="button_ChangePINLength" Content="Edit" HorizontalAlignment="Left" Margin="139,92,0,0" VerticalAlignment="Top"/>
-        <Button x:ConnectionId='8' x:Name="button_ChangeApiLocation" Content="Edit" HorizontalAlignment="Left" Margin="407,233,0,0" VerticalAlignment="Top"/>
-        <TextBox x:ConnectionId='9' x:Name="textBox_ApiServerAddress" HorizontalAlignment="Left" Margin="10,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="392" Header="API Server Address"/>
-        <Button x:ConnectionId='10' x:Name="button_ChangeDBServer" Content="Edit" HorizontalAlignment="Left" Margin="407,163,0,0" VerticalAlignment="Top"/>
-        <Button x:ConnectionId='11' x:Name="button_TestConnection" Content="Test Connection" HorizontalAlignment="Left" Margin="10,270,0,0" VerticalAlignment="Top" Width="136"                                    />
-        <TextBlock x:ConnectionId='12' x:Name="textBlock_ConnectionStatus" HorizontalAlignment="Left" Margin="184,276,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="218"/>
-        <TextBox x:ConnectionId='13' x:Name="textBox_ApiServerPort" HorizontalAlignment="Left" Margin="556,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="115" Header="API Server Port"/>
-        <Button x:ConnectionId='14' x:Name="button_ChangePort" Content="Edit" HorizontalAlignment="Left" Margin="676,163,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:ConnectionId='15' x:Name="checkBox_UseSsl" Content="Use SSL" HorizontalAlignment="Left" Margin="556,200,0,0" VerticalAlignment="Top"/>
-
+        <!--<TextBox x:Name="textBox_PinLength" HorizontalAlignment="Left" Margin="34,362,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="164" Header="PIN Length (DELETE)"/>-->
+        <Button x:ConnectionId='3' x:Name="button_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="473,390,0,0" VerticalAlignment="Top" Width="140"                            />
+        <Button x:ConnectionId='4' x:Name="button_SaveChanges" Content="Save Changes" HorizontalAlignment="Left" Margin="618,390,0,0" VerticalAlignment="Top" Width="140"                                 />
+        <TextBox x:ConnectionId='5' x:Name="textBox_ApiDirectory" HorizontalAlignment="Left" Margin="13,132,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="374" Header="API Directory"/>
+        <TextBox x:ConnectionId='6' x:Name="textBox_ApiServerAddress" HorizontalAlignment="Left" Margin="13,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="374" Header="API Server Address"/>
+        <Button x:ConnectionId='7' x:Name="button_TestConnection" Content="Test Connection" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="140"                                    />
+        <TextBlock x:ConnectionId='8' x:Name="textBlock_ConnectionStatus" HorizontalAlignment="Left" Margin="169,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="218"/>
+        <TextBox x:ConnectionId='9' x:Name="textBox_ApiServerPort" HorizontalAlignment="Left" Margin="13,197,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Header="API Server Port"/>
+        <CheckBox x:ConnectionId='10' x:Name="checkBox_UseSsl" Content="Use SSL" HorizontalAlignment="Left" Margin="222,225,0,0" VerticalAlignment="Top"/>
+        <Button x:ConnectionId='11' x:Name="button_ViewDbSettings" Content="View DB Settings" HorizontalAlignment="Left" Margin="419,10,0,0" VerticalAlignment="Top" Width="140"                                    />
+        <TextBlock x:ConnectionId='12' x:Name="textBlock_AllSettings" HorizontalAlignment="Left" Margin="419,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="338" Width="339"/>
     </Grid>
 </Page>
 

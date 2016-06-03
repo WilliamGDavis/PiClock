@@ -57,10 +57,10 @@ namespace PiClock.classes
 
     class EmployeePunches
     {
-        public List<RegularPunchesPaired> RegularPunchesPaired { get; set; }
-        public List<RegularPunchesOpen> RegularPunchesOpen { get; set; }
-        public List<JobPunchesPaired> JobPunchesPaired { get; set; }
-        public List<JobPunchesOpen> JobPunchesOpen{ get; set; }
+        public RegularPunchPaired RegularPunchesPaired { get; set; }
+        public RegularPunchOpen RegularPunchesOpen { get; set; }
+        public JobPunchesPaired JobPunchesPaired { get; set; }
+        public JobPunchOpen JobPunchesOpen { get; set; }
     }
 
     class EmployeePunchesForTheWeek
@@ -70,44 +70,68 @@ namespace PiClock.classes
 
     class WeekdayPunch
     {
+        public DateTime? Date { get; set; }
         public string DayName { get; set; }
+        public List<RegularPunchPaired> RegularPunchesPaired { get; set; }
+        public List<JobPunchesPaired> JobPunchesPaired { get; set; }
+        public List<RegularPunchOpen> RegularPunchesOpen { get; set; }
+        public List<JobPunchOpen> JobPunchesOpen { get; set; }
+    }
+
+    class RegularPunchPaired
+    {
+        public double? TotalDurationInSeconds { get; set; }
+        public List<RegularPunch> Punches { get; set; }
+    }
+
+    class RegularPunch
+    {
+        public string ParentId { get; set; }
+        public string ChildId { get; set; }
+        public DateTime? PunchIn { get; set; }
+        public DateTime? PunchOut { get; set; }
         public double? DurationInSeconds { get; set; }
-        //public DateTime? MaxPunch { get; set; }
     }
 
-    class RegularPunchesPaired
+    class RegularPunchOpen
     {
-        public string Id_ParentPunch { get; set; }
-        public string Id_ChildPunch { get; set; }
-        public DateTime DateTimeIn { get; set; }
-        public DateTime DateTimeOut { get; set; }
-    }
-
-    class RegularPunchesOpen
-    {
-        public string Id { get; set; }
-        public string Id_ParentPunch { get; set; }
-        public DateTime DateTime { get; set; }
-        public string Type { get; set; }
+        public string OpenId { get; set; }
+        public string ParentId { get; set; }
+        public DateTime? PunchIn { get; set; }
     }
 
     class JobPunchesPaired
     {
-        public string Id_ParentPunch { get; set; }
-        public string Id_ChildPunch { get; set; }
-        public string JobDescription { get; set; }
-        public DateTime DateTimeIn { get; set; }
-        public DateTime DateTimeOut { get; set; }
+        public double? TotalDurationInSeconds { get; set; }
+        public List<JobPunch> Punches { get; set; }
     }
 
-    class JobPunchesOpen
+    class JobPunch
+    {
+        public string ParentId { get; set; }
+        public string ChildId { get; set; }
+        public DateTime? PunchIn { get; set; }
+        public DateTime? PunchOut { get; set; }
+        public double? DurationInSeconds { get; set; }
+        public JobInformation JobInformation { get; set; }
+        //public string JobId { get; set; }
+        //public double? JobDescription { get; set; }
+    }
+
+    class JobPunchOpen
+    {
+        public string OpenId { get; set; }
+        public string ParentId { get; set; }
+        public DateTime? PunchIn { get; set; }
+        //public string JobId { get; set; }
+        //public string JobDescription { get; set; }
+        public JobInformation JobInformation { get; set; }
+    }
+
+    class JobInformation
     {
         public string Id { get; set; }
-        public string Id_Jobs { get; set; }
-        public string JobDescription { get; set; }
-        public string Id_ParentPunch { get; set; }
-        public DateTime DateTime { get; set; }
-        public string Type { get; set; }
+        public string Description { get; set; }
     }
 
 

@@ -198,6 +198,7 @@
     <RootType FullName="PiClock.Launcher" />
     <RootType FullName="PiClock.EmployeePage" />
     <RootType FullName="PiClock.MainPage" />
+    <RootType FullName="PiClock.PunchIntoJobConfirmation" />
     <RootType FullName="Windows.UI.Xaml.Controls.ListViewItem" />
     <RootType FullName="PiClock.QuickView" />
   </Roots.RootTypes>

@@ -37,7 +37,6 @@ System.Net.Requests, Version=4.0.10.0, Culture=neutral, PublicKeyToken=b03f5f7f1
 System.Net.WebHeaderCollection, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 System.Numerics.Vectors, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 System.ObjectModel, Version=4.0.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
-System.Private.CompatQuirks, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 System.Private.CompilerServices.ICastable, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
 System.Private.CoreLib.Augments, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
