@@ -65,7 +65,7 @@ namespace PiClock.classes
 
     class EmployeePunchesForTheWeek
     {
-        public List<WeekdayPunch> WeekdayPunches { get; set; }
+        public List<WeekdayPunch> DayOfWeekPunch { get; set; }
     }
 
     class WeekdayPunch

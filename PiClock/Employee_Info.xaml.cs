@@ -46,64 +46,54 @@ namespace PiClock
 
             cvs1.Source = RegularPunches;
             cvs2.Source = JobPunches;
-            //cvs3.Source = ThisWeeksPunches;
+            cvs3.Source = ThisWeeksPunches;
 
             hubInfo.Header = string.Format("{0} {1}", Employee.fname, Employee.lname);
-            //hubSection_WeeklyTotal.Header = string.Format("Weekly Total: {0}", new DateTime(TotalHours.Ticks).ToString("HH:mm:ss"));
+            hubSection_WeeklyTotal.Header = string.Format("Weekly Total: {0}", new DateTime(TotalHours.Ticks).ToString("HH:mm:ss"));
         }
 
-        private void BuildWeeklyWidgets(List<WeekdayPunch> weeklyPunches = null)
+        private void BuildWeeklyWidgets(EmployeePunchesForTheWeek weeklyPunches = null)
         {
-            foreach (var day in weeklyPunches)
+            foreach (var day in weeklyPunches.DayOfWeekPunch)
             {
-                //double durationInSeconds = day.RegularPunchesPaired..GetValueOrDefault(); //Set the durationInSeconds to 0 if a null value is checked against
-                //string backgroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "SteelBlue" : "LightGray";
-                //string foregroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "White" : "Black";
+                double durationInSeconds = day.RegularPunchesPaired[0].TotalDurationInSeconds.GetValueOrDefault(); //Set the durationInSeconds to 0 if a null value is checked against
+                string backgroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "SteelBlue" : "LightGray";
+                string foregroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "White" : "Black";
+                TotalHours += TimeSpan.FromSeconds(durationInSeconds);
+                
+                //TODO: Check to see if the user is currently punched in and add it to the total duration
+                if (0 == durationInSeconds)
+                {
+                    ThisWeeksPunches.Add(new Widget
+                    {
+                        Line1 = string.Format("{0}", day.DayName),
+                        Line2 = string.Format("No Punches Available"),
+                        BackgroundColor = backgroundColor,
+                        TextColor = foregroundColor
+                    });
+                }
 
-                ////TODO: Check to see if the user is currently punched in (DO NOT match against the day of the week)
-                //if (0 == day.DurationInSeconds)
-                //{
-                //    ThisWeeksPunches.Add(new Widget
-                //    {
-                //        Line1 = string.Format("{0}", day.DayName),
-                //        Line2 = string.Format("No Punches Available"),
-                //        BackgroundColor = backgroundColor,
-                //        TextColor = foregroundColor
-                //    });
-                //}
-
-                //if (0 != day.DurationInSeconds)
-                //{
-                //    TimeSpan duration = TimeSpan.FromSeconds(durationInSeconds);
-                //    string stringDuration = new DateTime(duration.Ticks).ToString("HH:mm:ss");
-                //    TotalHours += duration;
-                //    ThisWeeksPunches.Add(new Widget
-                //    {
-                //        Line1 = string.Format("{0}", day.DayName),
-                //        Line2 = string.Format("Duration: {0}", stringDuration),
-                //        BackgroundColor = backgroundColor,
-                //        TextColor = foregroundColor
-                //    });
-                //}
+                if (0 != durationInSeconds)
+                {
+                    TimeSpan duration = TimeSpan.FromSeconds(durationInSeconds);
+                    string stringDuration = new DateTime(duration.Ticks).ToString("HH:mm:ss");
+                    //TotalHours += duration;
+                    ThisWeeksPunches.Add(new Widget
+                    {
+                        Line1 = string.Format("{0}", day.DayName),
+                        Line2 = string.Format("Duration: {0}", stringDuration),
+                        BackgroundColor = backgroundColor,
+                        TextColor = foregroundColor
+                    });
+                }
             }
         }
 
         private void BuildWidgets_SingleDayPunches(EmployeePunches punches)
         {
-            //foreach (var punch in punches.RegularPunchesOpen)
-            //{
-            //    TotalHours += DateTime.Now.Subtract(punch.PunchIn.GetValueOrDefault()); //Add the current duration of the current punch to the weekly total (Maybe eliminate and calculate using MySQL)
-            //    BuildWidget_OpenRegularPunch(punch);
-            //}
             BuildWidget_OpenRegularPunch(punches.RegularPunchesOpen);
-
             BuildWidget_ClosedRegularPunch(punches.RegularPunchesPaired);
-
-            //foreach (var punch in punches.JobPunchesOpen)
-            //{
-                BuildWidget_OpenJobPunch(punches.JobPunchesOpen);
-            //}
-            
+            BuildWidget_OpenJobPunch(punches.JobPunchesOpen);
             BuildWidget_ClosedJobPunch(punches.JobPunchesPaired);
         }
 
@@ -221,7 +211,7 @@ namespace PiClock
 
         }
 
-        private async Task<List<WeekdayPunch>> TryGetThisWeeksPunches()
+        private async Task<EmployeePunchesForTheWeek> TryGetThisWeeksPunches()
         {
             var punch = new Punch();
             var paramDictionary = new Dictionary<string, string>();
@@ -232,7 +222,7 @@ namespace PiClock
             var weeklyPunches = await punch.GetThisWeeksPunchesByEmployeeId();
 
             if (null != weeklyPunches)
-            { return JsonConvert.DeserializeObject<List<WeekdayPunch>>(weeklyPunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include}); }
+            { return JsonConvert.DeserializeObject<EmployeePunchesForTheWeek>(weeklyPunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include}); }
             else
             { return null; }
         }
