@@ -36,7 +36,7 @@ namespace PiClock.classes
             if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&
                 null != this
                 )
-            { return await CommonMethods.ReturnStringFromWebService(ParamDictionary); }
+            { return await CommonMethods.GetJsonFromRpcServer(ParamDictionary); }
             else
             { return null; }
         }

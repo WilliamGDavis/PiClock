@@ -6,8 +6,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace PiClock
 {
     /// <summary>
@@ -18,7 +16,7 @@ namespace PiClock
         Employee Employee { get; set; }
 
         public ChangeJob()
-        { this.InitializeComponent(); }
+        { InitializeComponent(); }
 
         //Retrieve the data from the previous parent page
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -77,39 +75,38 @@ namespace PiClock
                 return;
             }
 
+            await TryPunchIntoJob(newJobId);
             
 
+            
+
+            Frame.Navigate(typeof(MainPage), null);
+        }
+
+        private async Task TryPunchIntoJob(string newJobId)
+        {
             Punch punch = new Punch();
             var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "PunchIn");
-            paramDictionary.Add("employeeId", Employee.id.ToString());
-            punch.Employee = Employee;
-            punch.ParamDictionary = paramDictionary;
-            await punch.PunchIn();
-
-            paramDictionary.Clear();
             paramDictionary.Add("action", "PunchIntoJob");
             paramDictionary.Add("employeeId", Employee.id.ToString());
             paramDictionary.Add("currentJobId", (null != Employee.CurrentJob) ? Employee.CurrentJob.Id : "null"); //If a user is not currently logged into a job, set a null string value
             paramDictionary.Add("newJobId", newJobId);
             punch.Employee = Employee;
             punch.ParamDictionary = paramDictionary;
+
             await punch.PunchIntoJob();
-
-            Frame.Navigate(typeof(MainPage), null);
         }
-
 
         private async Task<string> JobLookup()
         {
             Dictionary<string, string> paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "JobLookup");
+            paramDictionary.Add("action", "GetJobIdByJobDescription");
             paramDictionary.Add("jobDescription", textBox_NewJob.Text);
             WebServiceCall wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), paramDictionary);
             var httpResponse = new HttpResponseMessage();
 
             //Job Lookup by Description (Actually the JobCode)
-            httpResponse = await wsCall.POST_JsonToWebApi();
+            httpResponse = await wsCall.POST_JsonToRpcServer();
             return await httpResponse.Content.ReadAsStringAsync();
         }
     }

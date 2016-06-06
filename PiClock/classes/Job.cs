@@ -23,7 +23,7 @@ namespace PiClock.classes
                 null != ParamDictionary)
             {
                 var wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), ParamDictionary);
-                HttpResponseMessage httpResponse = await wsCall.POST_JsonToWebApi();
+                HttpResponseMessage httpResponse = await wsCall.POST_JsonToRpcServer();
                 return await httpResponse.Content.ReadAsStringAsync();
             }
             else

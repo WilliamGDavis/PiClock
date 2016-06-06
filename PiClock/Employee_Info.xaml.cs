@@ -48,13 +48,30 @@ namespace PiClock
             cvs2.Source = JobPunches;
             cvs3.Source = ThisWeeksPunches;
 
+            TotalHours += calculateOpenPunchDuration(weeklyPunches).Duration();
+
             hubInfo.Header = string.Format("{0} {1}", Employee.fname, Employee.lname);
-            hubSection_WeeklyTotal.Header = string.Format("Weekly Total: {0}", new DateTime(TotalHours.Ticks).ToString("HH:mm:ss"));
+            hubSection_WeeklyTotal.Header = string.Format("Weekly Total: {0}:{1}:{2}", (int)TotalHours.TotalHours, TotalHours.Minutes, TotalHours.Seconds);
         }
 
-        private void BuildWeeklyWidgets(EmployeePunchesForTheWeek weeklyPunches = null)
+        private TimeSpan calculateOpenPunchDuration(EmployeePunchesByWeek weeklyPunches = null)
         {
-            foreach (var day in weeklyPunches.DayOfWeekPunch)
+            //Make sure there was a weeklyPunches object passed in
+            if (null == weeklyPunches)
+            { return TimeSpan.Zero; }
+
+            //If DateTime has a default value (usually when there is not an open punch)
+            if (DateTime.MinValue == weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault())
+            { return TimeSpan.Zero; }
+
+            //Return the current time minus the time punched in as a TimeSpan
+            return DateTime.Now.Subtract(weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault()).Duration();
+        }
+
+        private void BuildWeeklyWidgets(EmployeePunchesByWeek weeklyPunches = null)
+        {
+            
+            foreach (var day in weeklyPunches.PairedPunches)
             {
                 double durationInSeconds = day.RegularPunchesPaired[0].TotalDurationInSeconds.GetValueOrDefault(); //Set the durationInSeconds to 0 if a null value is checked against
                 string backgroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "SteelBlue" : "LightGray";
@@ -89,7 +106,7 @@ namespace PiClock
             }
         }
 
-        private void BuildWidgets_SingleDayPunches(EmployeePunches punches)
+        private void BuildWidgets_SingleDayPunches(EmployeePunchesByDay punches)
         {
             BuildWidget_OpenRegularPunch(punches.RegularPunchesOpen);
             BuildWidget_ClosedRegularPunch(punches.RegularPunchesPaired);
@@ -101,13 +118,14 @@ namespace PiClock
         {
             if ("" != regularPunchOpen.OpenId)
             {
-                string punchIn = regularPunchOpen.PunchIn.GetValueOrDefault().ToString("hh:mm tt");
-                TimeSpan currentDuration = DateTime.Now.Subtract(regularPunchOpen.PunchIn.GetValueOrDefault());
-                string stringDuration = new DateTime(currentDuration.Ticks).ToString("HH:mm:ss");
+                DateTime punchIn = regularPunchOpen.PunchIn.GetValueOrDefault();
+                TimeSpan currentDuration = DateTime.Now.Subtract(punchIn).Duration();
+                string formattedDuration = string.Format("{0}:{1}:{2}", (int)currentDuration.TotalHours, currentDuration.Minutes, currentDuration.Seconds);
+                string stringDuration = new DateTime(currentDuration.Ticks).ToString(formattedDuration);
                 RegularPunches.Add(new WidgetRegularPunchOpen
                 {
-                    Line1 = string.Format("{0}", DateTime.Now.ToString("dddd MM/dd")),
-                    Line2 = string.Format("Punch In: {0}", punchIn),
+                    Line1 = string.Format("{0}", regularPunchOpen.PunchIn.GetValueOrDefault().ToString("dddd MM/dd")),
+                    Line2 = string.Format("Punch In: {0}", punchIn.ToString("hh:mm tt")),
                     Line3 = string.Format("Duration: {0}", stringDuration),
                     BackgroundColor = "SteelBlue",
                     TextColor = "White"
@@ -115,7 +133,7 @@ namespace PiClock
             }
         }
 
-        private void BuildWidget_ClosedRegularPunch(RegularPunchPaired regularPunchPaired)
+        private void BuildWidget_ClosedRegularPunch(RegularPunchesPaired regularPunchPaired)
         {
             foreach (var punch in regularPunchPaired.Punches)
             {
@@ -192,7 +210,7 @@ namespace PiClock
         private void button_Click(object sender, RoutedEventArgs e)
         { Frame.Navigate(typeof(EmployeePage), Employee); }
 
-        private async Task<EmployeePunches> TryGetTodaysPunches()
+        private async Task<EmployeePunchesByDay> TryGetTodaysPunches()
         {
             var punch = new Punch();
             var paramDictionary = new Dictionary<string, string>();
@@ -204,14 +222,14 @@ namespace PiClock
 
             if (null != employeePunches)
             {
-                return JsonConvert.DeserializeObject<EmployeePunches>(employeePunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include });
+                return JsonConvert.DeserializeObject<EmployeePunchesByDay>(employeePunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include });
             }
             else
             { return null; }
 
         }
 
-        private async Task<EmployeePunchesForTheWeek> TryGetThisWeeksPunches()
+        private async Task<EmployeePunchesByWeek> TryGetThisWeeksPunches()
         {
             var punch = new Punch();
             var paramDictionary = new Dictionary<string, string>();
@@ -222,7 +240,7 @@ namespace PiClock
             var weeklyPunches = await punch.GetThisWeeksPunchesByEmployeeId();
 
             if (null != weeklyPunches)
-            { return JsonConvert.DeserializeObject<EmployeePunchesForTheWeek>(weeklyPunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include}); }
+            { return JsonConvert.DeserializeObject<EmployeePunchesByWeek>(weeklyPunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include}); }
             else
             { return null; }
         }

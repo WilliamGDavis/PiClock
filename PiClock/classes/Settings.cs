@@ -97,7 +97,7 @@ namespace PiClock.classes
         private async static Task<string> CallWebService(string[] requiredParams = null)
         {
             if (true == CommonMethods.CheckForRequiredParams(requiredParams, Settings.ParamDictionary))
-            { return await CommonMethods.ReturnStringFromWebService(Settings.ParamDictionary); }
+            { return await CommonMethods.GetJsonFromRpcServer(Settings.ParamDictionary); }
             else
             { return null; }
         }

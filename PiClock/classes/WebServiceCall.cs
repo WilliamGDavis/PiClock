@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace PiClock.classes
@@ -11,47 +12,46 @@ namespace PiClock.classes
         public string Uri { get; set; }
         public string Action { get; set; }
         public Dictionary<string, string> ParamDictionary { get; set; }
-        private HttpClient HttpClient { get; set; }
-        private HttpRequestMessage HttpRequest { get; set; }
-        private HttpResponseMessage HttpResponse { get; set; }
+        //private HttpClient HttpClient { get; set; }
+        //private HttpRequestMessage HttpRequest { get; set; }
+        //private HttpResponseMessage HttpResponse { get; set; }
 
         public WebServiceCall() { }
 
         public WebServiceCall(string uri = null, Dictionary<string, string> paramDictionary = null)
-        { Uri = uri;  ParamDictionary = paramDictionary; }
+        { Uri = uri; ParamDictionary = paramDictionary; }
 
         //Connect to a web service and retrieve the data (JSON format) using the GET verb
         public async Task<HttpResponseMessage> GET_JsonFromWebApi()
         {
-            if (null != Uri)
-            {
-                using (var HttpClient = new HttpClient())
-                {
-                    return await HttpClient.GetAsync(new Uri(Uri));
-                }
-            }
-            else
+            if (null == Uri)
             { return null; }
 
+            //TODO: Retrieve params passed in and build the URI
+
+            using (var HttpClient = new HttpClient())
+            { return await HttpClient.GetAsync(new Uri(Uri)); }
         }
 
         //Connect to a web service and retrieve the data (JSON format) using the POST verb
-        public async Task<HttpResponseMessage> POST_JsonToWebApi()
+        public async Task<HttpResponseMessage> POST_JsonToRpcServer()
         {
-            if (null != Uri && null != ParamDictionary)
-            {
-                using (var HttpClient = new HttpClient())
-                {
-                    using (var HttpRequest = new HttpRequestMessage(HttpMethod.Post, new Uri(Uri)))
-                    {
-                        HttpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
-                        return await HttpClient.SendAsync(HttpRequest);
-                    }
-                }
-                
-            }
-            else
+            //Return a null if the URI or the ParamDictionary is empty(null)
+            if (null == Uri || null == ParamDictionary)
             { return null; }
+
+            using (var HttpClient = new HttpClient())
+            {
+                //Client headers
+                HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                //Content headers
+                var content = new StringContent(JsonConvert.SerializeObject(ParamDictionary));
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                //return JSON from the RPC server
+                return await HttpClient.PostAsync(Uri, content);
+            }
         }
 
         //Check for a valid connection to the Web Service using the PUT verb

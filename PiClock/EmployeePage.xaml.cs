@@ -46,7 +46,7 @@ namespace PiClock
                 { textBlock_CurrentPunch.Text = "Current Job: None"; }
             }
             else
-            { textBlock_CurrentPunch.Text = "Not Logged In"; }
+            { textBlock_CurrentPunch.Text = "Not Punched In"; }
         }
 
         //Check to see if a user is currently logged in
