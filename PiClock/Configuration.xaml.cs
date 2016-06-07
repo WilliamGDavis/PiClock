@@ -24,6 +24,8 @@ namespace PiClock
             //Validate for null settings values and fill in the appropriate textboxes
             textBox_ApiServerAddress.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiServerAddress);
             textBox_ApiServerPort.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiServerPort);
+            textBox_ApiUsername.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiUsername);
+            passwordBox_ApiPassword.Password = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiPassword);
             textBox_ApiDirectory.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiDirectory);
             if ("s" == CommonMethods.ConvertNullStringToEmptyString(Settings.UseSsl))
             { checkBox_UseSsl.IsChecked = true; }
@@ -43,7 +45,7 @@ namespace PiClock
             IsEnabled = false;
 
             //Used as a "loading" placeholder
-            textBlock_AllSettings.Text = "Saving settings..."; 
+            textBlock_AllSettings.Text = "Saving settings...";
 
             //Check for a valid database connection before writing to local settings
             if (!true == await TryCheckDbConnection())
@@ -115,21 +117,23 @@ namespace PiClock
         //Check for a vaild connection to the web service and database
         private async Task<bool> TryCheckDbConnection()
         {
+
             //TODO: Check for valid values in the textboxes
-            string uriPrefix = String.Format("http://{0}{1}:{2}{3}", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
+            string uriPrefix = string.Format("http://{0}{1}:{2}{3}", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
                                                                      (true == checkBox_UseSsl.IsChecked) ? "s" : "",
                                                                      CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true),
                                                                      CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true));
 
             try
             {
-                DbFunctions dbConn = new DbFunctions();
-                dbConn.Uri = String.Format("{0}action=test_connection", uriPrefix);
+                var paramDictionary = new Dictionary<string, string>();
+                paramDictionary.Add("action", "test_connection");
+                paramDictionary.Add("ApiUsername", CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true));
+                paramDictionary.Add("ApiPassword", CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true));
+                var dbCall = new DbFunctions(uriPrefix, paramDictionary);
 
-
-                //Check the db connection.  
-                //Expected result: "true" or "false"
-                return ("true" == await dbConn.CheckDBConnection()) ? true : false;
+                var httpResponse = await dbCall.CheckDBConnection();
+                return ("true" == await httpResponse.Content.ReadAsStringAsync()) ? true : false;
             }
             catch (Exception ex)
             { return false; }
@@ -140,14 +144,23 @@ namespace PiClock
         {
             try
             {
+                string apiServerAddress = CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true);
+                string apiServerPort = CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true);
+                string apiDirectory = CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true);
+                string apiUsername = CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true);
+                string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
+                string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
+                string uriPrefix = string.Format("http{0}://{1}:{2}{3}", useSsl,
+                                                                                    apiServerAddress,
+                                                                                    apiServerPort,
+                                                                                    apiDirectory);
+
                 var paramDictionary = new Dictionary<string, string>();
                 paramDictionary.Add("action", "GetSettings");
-                Settings.ParamDictionary = paramDictionary;
-                Settings.UriPrefix = String.Format("http://{0}{1}:{2}{3}", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
-                                                                           (true == checkBox_UseSsl.IsChecked) ? "s" : "",
-                                                                           CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 255, true),
-                                                                           CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true));
-                return await SettingsFromDB.GetSettingsFromDb();
+                paramDictionary.Add("ApiUsername", apiUsername);
+                paramDictionary.Add("ApiPassword", apiPassword);
+                
+                return await SettingsFromDB.GetSettingsFromDb(uriPrefix, paramDictionary);
             }
             catch (Exception ex)
             { return ex.Message; }
@@ -159,15 +172,20 @@ namespace PiClock
             string apiServerAddress = CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true);
             string apiServerPort = CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true);
             string apiDirectory = CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true);
+            string apiUsername = CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true);
+            string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
             string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
             string allowPunchIntoJobWhenPunchingIn = (true == checkBox_AllowJobPunchWhenPunchingIn.IsChecked) ? "true" : "false";
+
             var paramDictionary = new Dictionary<string, string>();
             paramDictionary.Add("ApiServerAddress", apiServerAddress);
             paramDictionary.Add("ApiServerPort", apiServerPort);
             paramDictionary.Add("ApiDirectory", apiDirectory);
+            paramDictionary.Add("ApiUsername", apiUsername);
+            paramDictionary.Add("ApiPassword", apiPassword);
             paramDictionary.Add("UseSsl", useSsl);
-            paramDictionary.Add("AllowPunchIntoJobWhenPunchingIn", allowPunchIntoJobWhenPunchingIn); 
-            paramDictionary.Add("UriPrefix", String.Format("http{0}://{1}:{2}/{3}", useSsl,
+            paramDictionary.Add("AllowPunchIntoJobWhenPunchingIn", allowPunchIntoJobWhenPunchingIn);
+            paramDictionary.Add("UriPrefix", string.Format("http{0}://{1}:{2}{3}", useSsl,
                                                                                     apiServerAddress,
                                                                                     apiServerPort,
                                                                                     apiDirectory));

@@ -43,7 +43,9 @@ namespace PiClock.classes
             using (var HttpClient = new HttpClient())
             {
                 //Client headers
+                string basicAuth = string.Format("{0}:{1}", Settings.ApiUsername, Settings.ApiPassword);
                 HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(basicAuth)));
 
                 //Content headers
                 var content = new StringContent(JsonConvert.SerializeObject(ParamDictionary));
@@ -81,15 +83,31 @@ namespace PiClock.classes
     {
         //Check for a valid connection to the Web Service using the GET verb
         //Expected result: JSON - "true" or "false"
-        public async Task<string> CheckDBConnection()
+        public DbFunctions(string uri, Dictionary<string, string> paramDictionary)
         {
-            if (null != Uri)
-            {
-                using (HttpResponseMessage httpResponse = await GET_JsonFromWebApi())
-                { return await httpResponse.Content.ReadAsStringAsync(); }
-            }
-            else
+            Uri = uri;
+            ParamDictionary = paramDictionary;
+        }
+        public async Task<HttpResponseMessage> CheckDBConnection()
+        {
+            //Return a null if the URI or the ParamDictionary is empty(null)
+            if (null == Uri || null == ParamDictionary)
             { return null; }
+
+            using (var HttpClient = new HttpClient())
+            {
+                //Client headers
+                string basicAuth = string.Format("{0}:{1}", ParamDictionary["ApiUsername"], ParamDictionary["ApiPassword"]);
+                HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(basicAuth)));
+
+                //Content headers
+                var content = new StringContent(JsonConvert.SerializeObject(ParamDictionary));
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                //return JSON from the RPC server
+                return await HttpClient.PostAsync(Uri, content);
+            }
         }
     }
 }

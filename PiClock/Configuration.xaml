@@ -20,6 +20,8 @@
         <CheckBox x:Name="checkBox_UseSsl" Content="Use SSL" HorizontalAlignment="Left" Margin="222,225,0,0" VerticalAlignment="Top"/>
         <Button x:Name="button_ViewDbSettings" Content="View DB Settings" HorizontalAlignment="Left" Margin="419,10,0,0" VerticalAlignment="Top" Width="140" Click="button_ViewDbSettings_Click"/>
         <TextBlock x:Name="textBlock_AllSettings" HorizontalAlignment="Left" Margin="419,47,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="338" Width="339"/>
-        <CheckBox x:Name="checkBox_AllowJobPunchWhenPunchingIn" Content="Allow Job Punch When Punching In" HorizontalAlignment="Left" Margin="13,326,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox_AllowJobPunchWhenPunchingIn" Content="Allow Job Punch When Punching In" HorizontalAlignment="Left" Margin="13,353,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_ApiUsername" HorizontalAlignment="Left" Margin="13,262,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="183" Header="API Username"/>
+        <PasswordBox x:Name="passwordBox_ApiPassword" HorizontalAlignment="Left" Margin="204,262,0,0" VerticalAlignment="Top" Width="183" Header="Api Password"/>
     </Grid>
 </Page>

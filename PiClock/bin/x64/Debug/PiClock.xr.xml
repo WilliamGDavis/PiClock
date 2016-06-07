@@ -194,6 +194,13 @@
       <RootProperty Name="Margin" />
       <RootProperty Name="VerticalAlignment" />
     </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.PasswordBox">
+      <RootProperty Name="HorizontalAlignment" />
+      <RootProperty Name="Margin" />
+      <RootProperty Name="VerticalAlignment" />
+      <RootProperty Name="Width" />
+      <RootProperty Name="Header" />
+    </RootType>
     <RootType FullName="PiClock.Configuration" />
     <RootType FullName="PiClock.Launcher" />
     <RootType FullName="PiClock.EmployeePage" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -11,6 +12,8 @@ namespace PiClock.classes
         public static string ApiServerAddress { get; set; }
         public static string ApiServerPort { get; set; }
         public static string ApiDirectory { get; set; }
+        public static string ApiUsername { get; set; }
+        public static string ApiPassword { get; set; }
         public static string UriPrefix { get; set; }
         public static string UseSsl { get; set; }
         public static string AllowPunchIntoJobWhenPunchingIn { get; set; }
@@ -36,6 +39,8 @@ namespace PiClock.classes
             ApiServerAddress = ValidateSetting("ApiServerAddress");
             ApiServerPort = ValidateSetting("ApiServerPort");
             ApiDirectory = ValidateSetting("ApiDirectory");
+            ApiUsername = ValidateSetting("ApiUsername");
+            ApiPassword = ValidateSetting("ApiPassword");
             UriPrefix = ValidateSetting("UriPrefix");
             UseSsl = ValidateSetting("UseSsl");
             AllowPunchIntoJobWhenPunchingIn = ValidateSetting("AllowPunchIntoJobWhenPunchingIn");
@@ -83,21 +88,26 @@ namespace PiClock.classes
 
     static class SettingsFromDB
     {
-        public async static Task<string> GetSettingsFromDb()
+
+        public async static Task<string> GetSettingsFromDb(string uriPrefix = null, Dictionary<string, string> paramDictionary = null)
         {
-            if (null != Settings.UriPrefix && null != Settings.ParamDictionary)
+            if (null != uriPrefix && null != paramDictionary)
             {
-                string[] requiredParams = { "action" };
-                return await CallWebService(requiredParams);
+                string[] requiredParams = { "action", "ApiUsername", "ApiPassword" };
+                var httpResponse = await CallWebService(uriPrefix, paramDictionary, requiredParams);
+                return await httpResponse.Content.ReadAsStringAsync();
             }
             else
             { return null; }
         }
 
-        private async static Task<string> CallWebService(string[] requiredParams = null)
+        private async static Task<HttpResponseMessage> CallWebService(string uriPrefix, Dictionary<string, string> paramDictionary, string[] requiredParams = null)
         {
-            if (true == CommonMethods.CheckForRequiredParams(requiredParams, Settings.ParamDictionary))
-            { return await CommonMethods.GetJsonFromRpcServer(Settings.ParamDictionary); }
+            if (true == CommonMethods.CheckForRequiredParams(requiredParams, paramDictionary))
+            {
+                var wsCall = new WebServiceCall(uriPrefix, paramDictionary);
+                return await wsCall.POST_JsonToRpcServer();
+            }
             else
             { return null; }
         }
