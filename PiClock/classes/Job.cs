@@ -16,7 +16,7 @@ namespace PiClock.classes
         public Employee Employee { get; set; }
         public Dictionary<string, string> ParamDictionary { get; set; }
 
-        public async Task<string> CheckCurrentJob()
+        public async Task<string> GetCurrentJob()
         {
             string[] requiredParams = { "action", "employeeId" };
             if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&

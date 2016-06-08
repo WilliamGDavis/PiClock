@@ -119,7 +119,7 @@ namespace PiClock
         {
 
             //TODO: Check for valid values in the textboxes
-            string uriPrefix = string.Format("http://{0}{1}:{2}{3}", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
+            string uriPrefix = string.Format("http://{0}{1}:{2}/{3}", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
                                                                      (true == checkBox_UseSsl.IsChecked) ? "s" : "",
                                                                      CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true),
                                                                      CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true));
@@ -133,7 +133,8 @@ namespace PiClock
                 var dbCall = new DbFunctions(uriPrefix, paramDictionary);
 
                 var httpResponse = await dbCall.CheckDBConnection();
-                return ("true" == await httpResponse.Content.ReadAsStringAsync()) ? true : false;
+                string result = JsonConvert.DeserializeObject<string>(await httpResponse.Content.ReadAsStringAsync());
+                return ("true" == result) ? true : false;
             }
             catch (Exception ex)
             { return false; }
@@ -150,7 +151,7 @@ namespace PiClock
                 string apiUsername = CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true);
                 string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
                 string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
-                string uriPrefix = string.Format("http{0}://{1}:{2}{3}", useSsl,
+                string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", useSsl,
                                                                                     apiServerAddress,
                                                                                     apiServerPort,
                                                                                     apiDirectory);
@@ -185,7 +186,7 @@ namespace PiClock
             paramDictionary.Add("ApiPassword", apiPassword);
             paramDictionary.Add("UseSsl", useSsl);
             paramDictionary.Add("AllowPunchIntoJobWhenPunchingIn", allowPunchIntoJobWhenPunchingIn);
-            paramDictionary.Add("UriPrefix", string.Format("http{0}://{1}:{2}{3}", useSsl,
+            paramDictionary.Add("UriPrefix", string.Format("http{0}://{1}:{2}/{3}", useSsl,
                                                                                     apiServerAddress,
                                                                                     apiServerPort,
                                                                                     apiDirectory));

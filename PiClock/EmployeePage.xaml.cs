@@ -30,17 +30,17 @@ namespace PiClock
         {
             await CheckLoginStatus();
             ShowOrHideButtons();
-            textBlock.Text = String.Format("Welcome, {0} {1}", Employee.fname, Employee.lname);
+            textBlock.Text = string.Format("Welcome, {0} {1}", Employee.fname, Employee.lname);
             if (true == LoggedIn)
             {
                 //This should return a JSON string ("null" or an array) or a null
-                string currentJob = await TryCheckCurrentJob();
+                string currentJob = await TryGetCurrentJob();
 
                 //If a job is returned, deserialize it into a Job object
-                if ("null" != currentJob && null != currentJob)
+                if ("[]" != currentJob && null != currentJob)
                 {
                     Employee.CurrentJob = JsonConvert.DeserializeObject<Job>(currentJob);
-                    textBlock_CurrentPunch.Text = String.Format("Current Job: {0}", Employee.CurrentJob.Description);
+                    textBlock_CurrentPunch.Text = string.Format("Current Job: {0}", Employee.CurrentJob.Description);
                 }
                 else
                 { textBlock_CurrentPunch.Text = "Current Job: None"; }
@@ -52,6 +52,7 @@ namespace PiClock
         //Check to see if a user is currently logged in
         private async Task CheckLoginStatus()
         {
+            var test = await TryCheckLoginStatus();
             if (true == await TryCheckLoginStatus())
             { LoggedIn = true; }
             else
@@ -64,7 +65,7 @@ namespace PiClock
         private async void button_PunchIn_Click(object sender, RoutedEventArgs e)
         {
             //////////////////////////////////////// DO NOT DELETE ////////////////////////////////////////////////////
-            ////TODO: Convert to a custom page, as Windows.UI.Core.CoreWindowDialog and Windows.UI.Popups.MessageDialog are not implemented in Windows IOT yet
+            ////TODO: Convert to a custom page, as Windows.UI.Core.CoreWindowDialog and Windows.UI.Popups.MessageDialog are not implemented in Windows IoT yet
             ////Note: Keep this functionality in the application, just commented out.  It will be available eventually
             ////Display a message box allowing a user to punch directly into a job number, or no job number
             ////If a user chooses to punch into a job number, take them to the ChangeJob page
@@ -148,17 +149,17 @@ namespace PiClock
         }
 
         //Check to see if a user is currently logged into a job, and parse it into a JSON string if they are
-        private async Task<string> TryCheckCurrentJob()
+        private async Task<string> TryGetCurrentJob()
         {
             Job job = new Job();
             var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "CheckCurrentJob");
+            paramDictionary.Add("action", "GetCurrentJob");
             paramDictionary.Add("employeeId", Employee.id.ToString());
             job.Employee = Employee;
             job.ParamDictionary = paramDictionary;
 
             //Should return a JSON string or null (if there were errors)
-            return await job.CheckCurrentJob();
+            return await job.GetCurrentJob();
         }
 
         //Check the database to see if a user is logged in currently
@@ -170,7 +171,8 @@ namespace PiClock
             Employee.ParamDictionary = paramDictionary;
 
             //Should return true or false (will also return false if there was an error)
-            return await Employee.CheckLoginStatus();
+            var result = JsonConvert.DeserializeObject<string>(await Employee.CheckLoginStatus());
+            return ("true" == result) ? true : false;
         }
 
         //Show a message box asking the user if they want to punch directly into a job after they punch in

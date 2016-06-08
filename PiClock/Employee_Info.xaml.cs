@@ -90,7 +90,7 @@ namespace PiClock
                 if (0 != durationInSeconds)
                 {
                     TimeSpan duration = TimeSpan.FromSeconds(durationInSeconds);
-                    string stringDuration = new DateTime(duration.Ticks).ToString("HH:mm:ss");
+                    string stringDuration = new DateTime(duration.Ticks).ToString(string.Format("{0}:{1}:{2}", (int)duration.TotalHours, duration.Minutes, duration.Seconds));
                     //TotalHours += duration;
                     ThisWeeksPunches.Add(new Widget
                     {

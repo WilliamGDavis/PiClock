@@ -51,35 +51,36 @@ namespace PiClock
             paramDictionary.Add("employeeId", name.Tag.ToString());
             employee.ParamDictionary = paramDictionary;
 
-            bool isLoggedIn = await employee.CheckLoginStatus();
+            bool isLoggedIn = ("true" == await employee.CheckLoginStatus()) ? true : false;
+
             Job currentJob = null;
             if (true == isLoggedIn)
             {
                 paramDictionary.Clear();
                 Job job = new Job();
-                paramDictionary.Add("action", "CheckCurrentJob");
+                paramDictionary.Add("action", "GetCurrentJob");
                 paramDictionary.Add("employeeId", name.Tag.ToString());
                 job.ParamDictionary = paramDictionary;
 
                 //Should return a JSON string or null (if there were errors)
-                string result = await job.CheckCurrentJob();
+                string result = await job.GetCurrentJob();
 
                 if ("null" != result)
                 { currentJob = JsonConvert.DeserializeObject<Job>(result); }
             }
             string jobDescription = (null != currentJob) ? currentJob.Description : "None";
-            textBlock.Text = String.Format("ID: {0}\nName: {1}\nLogged In: {2}", name.Tag.ToString(),
+            textBlock.Text = string.Format("ID: {0}\nName: {1}\nLogged In: {2}", name.Tag.ToString(),
                                                                                  name.Content.ToString(),
                                                                                  (true == isLoggedIn) ? "Yes (" + jobDescription + ")" : "No"
                                                                                  );
         }
 
-        private async Task<Job> CheckCurrentJob()
+        private async Task<Job> GetCurrentJob()
         {
             return new Job();
         }
 
-        private async Task<string> TryCheckCurrentJob()
+        private async Task<string> TryGetCurrentJob()
         {
             return null;
         }

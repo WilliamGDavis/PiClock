@@ -16,13 +16,10 @@ namespace PiClock.classes
         public List<Job> JobList { get; set; }
         public Dictionary<string, string> ParamDictionary { get; set; }
         
-        public async Task<bool> CheckLoginStatus()
+        public async Task<string> CheckLoginStatus()
         {
             string[] requiredParams = { "action", "employeeId" };
-            if ("true" == await CallWebService(requiredParams)) //this refers to the current instance of the class
-            { return true; }
-            else
-            { return false; }
+            return await CallWebService(requiredParams);
         }
 
         public async Task<string> GetEmployeeList()

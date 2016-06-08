@@ -77,9 +77,6 @@ namespace PiClock
 
             await TryPunchIntoJob(newJobId);
             
-
-            
-
             Frame.Navigate(typeof(MainPage), null);
         }
 
