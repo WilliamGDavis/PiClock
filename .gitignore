@@ -46,4 +46,16 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+.vs/PiClock/v14/
 PiClock/Assets/
+PiClock/Properties/
+PiClock/obj/
+PiClock.sln
+PiClock/bin
+App.*
+ApplicationInsights.config
+Package.*
+PiClock.csproj
+PiClock.csproj.user
+PiClock_TemporaryKey.pfx
+Project.*
