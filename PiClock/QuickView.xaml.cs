@@ -12,6 +12,7 @@ namespace PiClock
     public sealed partial class QuickView : Page
     {
         private List<Employee> EmployeeList { get; set; }
+        private string test { get; set; }//REMOVE
 
         public QuickView()
         { InitializeComponent(); }
