@@ -19,17 +19,17 @@ namespace PiClock
         {
             IsEnabled = false;
             //Read from local settings and display them to the user
-            Settings.ReadLocalSettings();
+            //Settings.ReadLocalSettings();
 
             //Validate for null settings values and fill in the appropriate textboxes
-            textBox_ApiServerAddress.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiServerAddress);
-            textBox_ApiServerPort.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiServerPort);
-            textBox_ApiUsername.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiUsername);
-            passwordBox_ApiPassword.Password = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiPassword);
-            textBox_ApiDirectory.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.ApiDirectory);
-            if ("s" == CommonMethods.ConvertNullStringToEmptyString(Settings.UseSsl))
+            textBox_ApiServerAddress.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.Read("ApiServerAddress"));
+            textBox_ApiServerPort.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.Read("ApiServerPort"));
+            textBox_ApiUsername.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.Read("ApiUsername"));
+            passwordBox_ApiPassword.Password = CommonMethods.ConvertNullStringToEmptyString(Settings.Read("ApiPassword"));
+            textBox_ApiDirectory.Text = CommonMethods.ConvertNullStringToEmptyString(Settings.Read("ApiDirectory"));
+            if ("s" == CommonMethods.ConvertNullStringToEmptyString(Settings.Read("UseSsl")))
             { checkBox_UseSsl.IsChecked = true; }
-            if ("true" == CommonMethods.ConvertNullStringToEmptyString(Settings.AllowPunchIntoJobWhenPunchingIn))
+            if ("true" == CommonMethods.ConvertNullStringToEmptyString(Settings.Read("AllowPunchIntoJobWhenPunchingIn")))
             { checkBox_AllowJobPunchWhenPunchingIn.IsChecked = true; }
 
             IsEnabled = true;
@@ -179,6 +179,7 @@ namespace PiClock
             string allowPunchIntoJobWhenPunchingIn = (true == checkBox_AllowJobPunchWhenPunchingIn.IsChecked) ? "true" : "false";
 
             var paramDictionary = new Dictionary<string, string>();
+            
             paramDictionary.Add("ApiServerAddress", apiServerAddress);
             paramDictionary.Add("ApiServerPort", apiServerPort);
             paramDictionary.Add("ApiDirectory", apiDirectory);
@@ -206,7 +207,7 @@ namespace PiClock
         }
 
         //Format the setting into a human-readable string
-        private string BuildSettingsList(List<DbSettings> settingsList = null)
+        private string BuildSettingsList(List<DbSettings> settingsList)
         {
             var settingsString = new StringBuilder();
             settingsString.Append("Settings:\n");

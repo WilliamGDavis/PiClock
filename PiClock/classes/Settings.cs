@@ -6,8 +6,9 @@ using Windows.Storage;
 
 namespace PiClock.classes
 {
-    static class Settings
+    public class AppSettings
     {
+        //Valid Application Settings Values
         public static string PinLength { get; set; }
         public static string ApiServerAddress { get; set; }
         public static string ApiServerPort { get; set; }
@@ -17,8 +18,23 @@ namespace PiClock.classes
         public static string UriPrefix { get; set; }
         public static string UseSsl { get; set; }
         public static string AllowPunchIntoJobWhenPunchingIn { get; set; }
+    }
+
+    static class Settings
+    {
         public static Dictionary<string, string> ParamDictionary { get; set; } //Dictionary of all the application settings, set application-side
         private readonly static ApplicationDataContainer SettingsLocation = ApplicationData.Current.LocalSettings; //Use the application's "LocalSettings" folder to hold the settings values
+
+        //Write an individial value to settings
+        //TODO: Validation
+        public static void Write(string key, string value)
+        { SettingsLocation.Values[key] = value; }
+
+        //Return an individual setting's value
+        //Expected result: string value of a setting, or a null if the setting doesn't exist
+        public static string Read(string key)
+        { return ValidateSetting(key); }
+
 
         //Write the properties of this class to a settings file
         public static void WriteAllSettings()
@@ -30,31 +46,7 @@ namespace PiClock.classes
             }
         }
 
-        //Read all the setting and pass them to this instance
-        //If the setting does not exist, it will set the field to a null value
-        public static void ReadLocalSettings()
-        {
-            //TODO: Write a function to clean this up.  Consider using an Enum.
-            PinLength = ValidateSetting("PinLength");
-            ApiServerAddress = ValidateSetting("ApiServerAddress");
-            ApiServerPort = ValidateSetting("ApiServerPort");
-            ApiDirectory = ValidateSetting("ApiDirectory");
-            ApiUsername = ValidateSetting("ApiUsername");
-            ApiPassword = ValidateSetting("ApiPassword");
-            UriPrefix = ValidateSetting("UriPrefix");
-            UseSsl = ValidateSetting("UseSsl");
-            AllowPunchIntoJobWhenPunchingIn = ValidateSetting("AllowPunchIntoJobWhenPunchingIn");
-        }
 
-        //Write an individial value to settings
-        //TODO: Validation
-        public static void WriteSetting(string key, string value)
-        { SettingsLocation.Values[key] = value; }
-
-        //Return an individual setting's value
-        //Expected result: string value of a setting, or a null if the setting doesn't exist
-        public static string ReadSetting(string key)
-        { return ValidateSetting(key); }
 
         //Used to "Clear" out the settings file, and all of it's values.  USE CAREFULLY!
         //This will completely blank the file out
@@ -89,7 +81,7 @@ namespace PiClock.classes
     static class SettingsFromDB
     {
 
-        public async static Task<string> GetSettingsFromDb(string uriPrefix = null, Dictionary<string, string> paramDictionary = null)
+        public async static Task<string> GetSettingsFromDb(string uriPrefix, Dictionary<string, string> paramDictionary)
         {
             if (null != uriPrefix && null != paramDictionary)
             {
@@ -105,8 +97,8 @@ namespace PiClock.classes
         {
             if (true == CommonMethods.CheckForRequiredParams(requiredParams, paramDictionary))
             {
-                var wsCall = new WebServiceCall(uriPrefix, paramDictionary);
-                return await wsCall.POST_JsonToRpcServer();
+                var wsCall = new WebServiceCall(paramDictionary);
+                return await wsCall.PostJsonToRpcServer();
             }
             else
             { return null; }

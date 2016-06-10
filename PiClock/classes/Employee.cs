@@ -7,7 +7,7 @@ namespace PiClock.classes
 {
     public class Employee
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public string fname { get; set; }
         public string mname { get; set; }
         public string lname { get; set; }
@@ -15,27 +15,32 @@ namespace PiClock.classes
         public Job CurrentJob { get; set; }
         public List<Job> JobList { get; set; }
         public Dictionary<string, string> ParamDictionary { get; set; }
-        
-        public async Task<string> CheckLoginStatus()
+
+        //Check the database to see if a user is logged in currently
+        public static async Task<bool> TryCheckLoginStatus(string employeeId)
         {
-            string[] requiredParams = { "action", "employeeId" };
-            return await CallWebService(requiredParams);
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "CheckLoginStatus" },
+                { "employeeId", employeeId }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            var httpResponse = await wsCall.PostJsonToRpcServer();
+
+            //Should return true or false (will also return false if there was an error)
+            var result = JsonConvert.DeserializeObject<string>(await httpResponse.Content.ReadAsStringAsync());
+            return ("true" == result) ? true : false;
         }
 
-        public async Task<string> GetEmployeeList()
+        //Return a list of all employees in the database
+        public static async Task<HttpResponseMessage> TryGetEmployeeList()
         {
-            string[] requiredParams = { "action" };
-            return await CallWebService(requiredParams);
-        }
-
-        public async Task<string> CallWebService(string[] requiredParams = null)
-        {
-            if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&
-                null != this
-                )
-            { return await CommonMethods.GetJsonFromRpcServer(ParamDictionary); }
-            else
-            { return null; }
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "GetEmployeeList" }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            return await wsCall.PostJsonToRpcServer();
         }
     }
 }

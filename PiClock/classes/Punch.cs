@@ -1,54 +1,99 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PiClock.classes
 {
-    class Punch
+    public class Punch
     {
-        public Employee Employee { get; set; }
-        public Dictionary<string, string> ParamDictionary { get; set; }
-
-        
-        public async Task<string> PunchIn()
+        //Lookup a jobId in the database based on the jobDescription
+        public static async Task<string> JobLookup(string jobDescription)
         {
-            string[] requiredParams = { "action", "employeeId" };
-            return await CallWebService(requiredParams);
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                {"action", "GetJobIdByJobDescription" },
+                {"jobDescription", jobDescription }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            var httpResponse = await wsCall.PostJsonToRpcServer();
+            return await httpResponse.Content.ReadAsStringAsync();
         }
 
-        public async Task<string> PunchOut()
+        //Attempt to punch into a new job while punching out of an old job, if necessary
+        public static async Task PunchIntoNewJob(Employee employee, string newJobId)
         {
-            string[] requiredParams = { "action", "employeeId", "currentJobId" };
-            return await CallWebService(requiredParams);
+            string currentJobId = (null != employee.CurrentJob) ? employee.CurrentJob.Id.ToString() : "null";
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "PunchIntoJob" },
+                { "employeeId", employee.id },
+                { "currentJobId",  currentJobId },
+                { "newJobId", newJobId }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            await wsCall.PostJsonToRpcServer();
         }
 
-        public async Task<string> PunchIntoJob()
+        //Punch in to the database (Regular Punch)
+        public static async Task<bool> PunchIn(string employeeId)
         {
-            string[] requiredParams = { "action", "employeeId", "currentJobId", "newJobId" };
-            return await CallWebService(requiredParams);
+            var punch = new Punch();
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "PunchIn" },
+                { "employeeId", employeeId }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            var httpResponse = await wsCall.PostJsonToRpcServer();
+
+            //TODO: Verify the returned data from the RPC server and make sure that this is even necessary
+            return (null != httpResponse) ? true : false;
         }
 
-        public async Task<string> GetTodaysPunchesByEmployeeId()
+        //Punch out of the database
+        public static async Task<bool> PunchOut(string employeeId, string currentJobId)
         {
-            string[] requiredParams = { "action", "employeeId" };
-            return await CallWebService(requiredParams);
-        }
+            var punch = new Punch();
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "PunchOut" },
+                { "employeeId", employeeId },
+                { "currentJobId", currentJobId }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            var httpResponse = await wsCall.PostJsonToRpcServer();
 
-        public async Task<string> GetThisWeeksPunchesByEmployeeId()
-        {
-            string[] requiredParams = { "action", "employeeId" };
-            return await CallWebService(requiredParams);
-        }
-
-
-        private async Task<string> CallWebService(string[] requiredParams = null)
-        {
-            if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&
-                null != Employee
-                )
-            { return await CommonMethods.GetJsonFromRpcServer(ParamDictionary); }
+            //TODO: Verify the returned data from the RPC server and make sure that this is even necessary
+            if (null != httpResponse)
+            { return true; }
             else
-            { return null; }
+            { return false; }
+        }
+
+        //Return an array of the punches for the day
+        public static async Task<HttpResponseMessage> GetTodaysPunches(string employeeId)
+        {
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "GetSingleDayPunchesByEmployeeId" },
+                { "employeeId", employeeId }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            return await wsCall.PostJsonToRpcServer();
+        }
+
+        //Return an array of the punches for the week
+        public static async Task<HttpResponseMessage> TryGetThisWeeksPunches(string employeeId)
+        {
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "GetThisWeeksPunchesByEmployeeId" },
+                { "employeeId", employeeId }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            return await wsCall.PostJsonToRpcServer();
         }
     }
 

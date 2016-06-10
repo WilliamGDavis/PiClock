@@ -1,24 +1,21 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PiClock.classes
 {
     class Authentication
     {
-        public Dictionary<string, string> ParamDictionary { get; set; }
-
-        public async Task<string> Login()
+        //Check the databse for an employee with the PIN passed in
+        public static async Task<HttpResponseMessage> TryLogin(string pin)
         {
-            string[] requiredParams = { "action", "pin" };
-            return await CallWebService(requiredParams);
-        }
-
-        private async Task<string> CallWebService(string[] requiredParams = null)
-        {
-            if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary))
-            { return await CommonMethods.GetJsonFromRpcServer(ParamDictionary); }
-            else
-            { return null; }
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "PinLogin" },
+                { "pin", pin }
+            };
+            var wsCall = new WebServiceCall(paramDictionary);
+            return await wsCall.PostJsonToRpcServer();
         }
     }
 }

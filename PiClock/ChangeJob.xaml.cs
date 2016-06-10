@@ -1,4 +1,5 @@
-﻿using PiClock.classes;
+﻿using Newtonsoft.Json;
+using PiClock.classes;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -57,6 +58,7 @@ namespace PiClock
 
         private async void button_ChangeJob_Click(object sender, RoutedEventArgs e)
         {
+            //Check to make sure a user is not trying to punch into the job they're currently punched into
             if (textBox_CurrentJob.Text == textBox_NewJob.Text)
             {
                 textBlock.Text = "You're already punched into this job!";
@@ -64,47 +66,21 @@ namespace PiClock
                 return;
             }
 
-            //Find the job the user is currently logged into
-            //Settings settings = new Settings();
-            string newJobId = await JobLookup();
+            //Retrieve the JobId from the database that matches the new job description
+            string jobDescription = textBox_NewJob.Text;
+            string newJobId = await Punch.JobLookup(jobDescription);
 
-            if ("null" == newJobId)
+            //Check to make sure that the new job exists in the database
+            if ("false" == newJobId)
             {
                 textBlock.Text = "Job Number does not exist!";
                 textBox_NewJob.Text = "";
                 return;
             }
 
-            await TryPunchIntoJob(newJobId);
-            
+            //Punch into the new job (and punch out of the old job)
+            await Punch.PunchIntoNewJob(this.Employee, newJobId);
             Frame.Navigate(typeof(MainPage), null);
-        }
-
-        private async Task TryPunchIntoJob(string newJobId)
-        {
-            Punch punch = new Punch();
-            var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "PunchIntoJob");
-            paramDictionary.Add("employeeId", Employee.id.ToString());
-            paramDictionary.Add("currentJobId", (null != Employee.CurrentJob) ? Employee.CurrentJob.Id : "null"); //If a user is not currently logged into a job, set a null string value
-            paramDictionary.Add("newJobId", newJobId);
-            punch.Employee = Employee;
-            punch.ParamDictionary = paramDictionary;
-
-            await punch.PunchIntoJob();
-        }
-
-        private async Task<string> JobLookup()
-        {
-            Dictionary<string, string> paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "GetJobIdByJobDescription");
-            paramDictionary.Add("jobDescription", textBox_NewJob.Text);
-            WebServiceCall wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), paramDictionary);
-            var httpResponse = new HttpResponseMessage();
-
-            //Job Lookup by Description (Actually the JobCode)
-            httpResponse = await wsCall.POST_JsonToRpcServer();
-            return await httpResponse.Content.ReadAsStringAsync();
         }
     }
 }

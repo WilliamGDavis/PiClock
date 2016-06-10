@@ -13,7 +13,6 @@ namespace PiClock
     public sealed partial class Employee_Info : Page
     {
         Employee Employee { get; set; }
-        Dictionary<string, string> ParamDictionary { get; set; }
         List<Widget> RegularPunches { get; set; }
         List<Widget> JobPunches { get; set; }
         List<Widget> ThisWeeksPunches { get; set; }
@@ -33,11 +32,13 @@ namespace PiClock
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var todayPunches = await TryGetTodaysPunches();
+            var httpResponse = await Punch.GetTodaysPunches(Employee.id);
+            var todayPunches = JsonConvert.DeserializeObject<EmployeePunchesByDay>(await httpResponse.Content.ReadAsStringAsync());
             if (null != todayPunches)
             { BuildWidgets_SingleDayPunches(todayPunches); }
 
-            var weeklyPunches = await TryGetThisWeeksPunches();
+            httpResponse = await Punch.TryGetThisWeeksPunches(Employee.id);
+            var weeklyPunches = JsonConvert.DeserializeObject<EmployeePunchesByWeek>(await httpResponse.Content.ReadAsStringAsync());
             if (null != weeklyPunches)
             { BuildWeeklyWidgets(weeklyPunches); }
 
@@ -51,19 +52,6 @@ namespace PiClock
             hubSection_WeeklyTotal.Header = string.Format("Weekly Total: {0}:{1}:{2}", (int)TotalHours.TotalHours, TotalHours.Minutes, TotalHours.Seconds);
         }
 
-        private TimeSpan calculateOpenPunchDuration(EmployeePunchesByWeek weeklyPunches = null)
-        {
-            //Make sure there was a weeklyPunches object passed in
-            if (null == weeklyPunches)
-            { return TimeSpan.Zero; }
-
-            //If DateTime has a default value (usually when there is not an open punch)
-            if (DateTime.MinValue == weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault())
-            { return TimeSpan.Zero; }
-
-            //Return the current time minus the time punched in as a TimeSpan
-            return DateTime.Now.Subtract(weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault()).Duration();
-        }
 
         private void BuildWeeklyWidgets(EmployeePunchesByWeek weeklyPunches = null)
         {
@@ -190,56 +178,21 @@ namespace PiClock
             }
         }
 
-        //private void BuildTodayWidgetsJobPunch(JobPunchesPaired jobPunch = null)
-        //{
-        //    if (null != jobPunch)
-        //    {
-        //        string type = ("1" == jobPunch.Type) ? "IN" : "OUT";
-
-        //        WidgetListJobPunchesPaired.Add(new WidgetJobPunchesPaired
-        //        {
-        //            Line1 = string.Format("{0} - {1}", type, jobPunch.IdJobs), //TODO: Convert Job ID to job description
-        //            Line2 = string.Format("{0}", jobPunch.TimeStamp.ToString("hh:mm:ss tt"))
-        //        });
-        //    }
-        //}
-
         private void button_Click(object sender, RoutedEventArgs e)
         { Frame.Navigate(typeof(EmployeePage), Employee); }
 
-        private async Task<EmployeePunchesByDay> TryGetTodaysPunches()
+        private TimeSpan calculateOpenPunchDuration(EmployeePunchesByWeek weeklyPunches = null)
         {
-            var punch = new Punch();
-            var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "GetSingleDayPunchesByEmployeeId");
-            paramDictionary.Add("employeeId", Employee.id.ToString());
-            punch.Employee = Employee;
-            punch.ParamDictionary = paramDictionary;
-            var employeePunches = await punch.GetTodaysPunchesByEmployeeId();
+            //Make sure there was a weeklyPunches object passed in
+            if (null == weeklyPunches)
+            { return TimeSpan.Zero; }
 
-            if (null != employeePunches)
-            {
-                return JsonConvert.DeserializeObject<EmployeePunchesByDay>(employeePunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include });
-            }
-            else
-            { return null; }
+            //If DateTime has a default value (usually when there is not an open punch)
+            if (DateTime.MinValue == weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault())
+            { return TimeSpan.Zero; }
 
-        }
-
-        private async Task<EmployeePunchesByWeek> TryGetThisWeeksPunches()
-        {
-            var punch = new Punch();
-            var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "GetThisWeeksPunchesByEmployeeId");
-            paramDictionary.Add("employeeId", Employee.id.ToString());
-            punch.Employee = Employee;
-            punch.ParamDictionary = paramDictionary;
-            var weeklyPunches = await punch.GetThisWeeksPunchesByEmployeeId();
-
-            if (null != weeklyPunches)
-            { return JsonConvert.DeserializeObject<EmployeePunchesByWeek>(weeklyPunches, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Include}); }
-            else
-            { return null; }
+            //Return the current time minus the time punched in as a TimeSpan
+            return DateTime.Now.Subtract(weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault()).Duration();
         }
     }
 }

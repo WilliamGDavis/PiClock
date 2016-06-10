@@ -22,7 +22,7 @@ namespace PiClock
             {
                 _currentPin = value;
                 //Match the PIN length to the value in the Settings class and attempt to login if they match
-                if (Settings.ConvertStringToInt(Settings.PinLength) == _currentPin.Length)
+                if (Settings.ConvertStringToInt(Settings.Read("PinLength")) == _currentPin.Length)
                 { Login(); }
             }
         }
@@ -30,10 +30,7 @@ namespace PiClock
         public MainPage()
         {
             InitializeComponent();
-            Settings.ReadLocalSettings(); //Read all settings values from "LocalSettings" and assign them to the static class Settings
             DispatcherTimerSetup(); //Display the current date/time in a readable format and create the ticking "timer" to update the date/time every second
-            //textBlock_CurrentTime.Text = Format_dt_Current(TickingTimer.DispatcherTimerSetup());
-            //Settings.EraseAllSettings();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -106,14 +103,17 @@ namespace PiClock
         private async void Login()
         {
             var employee = new Employee();
-            string result = null;
+            var httpResponse = await Authentication.TryLogin(CurrentPin);
+
             try
-            { result = await TryLogin(); }
+            {
+                string result = await httpResponse.Content.ReadAsStringAsync();
+                //If a PIN is not in the database, the TryLogin() will return an empty array
+                employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
+            }
             catch (HttpRequestException)
             { return; }
 
-            //If a PIN is not in the database, the TryLogin() will return an empty array
-            employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
 
             if (null != employee)
             { //Successful Login
@@ -128,38 +128,15 @@ namespace PiClock
             }
         }
 
-        private async Task<string> TryLogin()
-        {
-            try
-            {
-                var authentication = new Authentication();
-                var paramDictionary = new Dictionary<string, string>();
-                paramDictionary.Add("action", "PinLogin");
-                paramDictionary.Add("pin", CurrentPin);
-                authentication.ParamDictionary = paramDictionary;
-                return await authentication.Login();
-            }
-            catch (HttpRequestException ex)
-            { return ex.Message; }
-        }
-
         private async Task<List<Employee>> GetEmployeeList()
         {
-            string employeeList = await TryGetEmployeeList();
+            var httpResponse = await Employee.TryGetEmployeeList();
+            string employeeList = await httpResponse.Content.ReadAsStringAsync();
             if ("Cannot connect to database" != employeeList &&
                 "[]" != employeeList) //Bad connection or an empty strin array returned from web service
             { return JsonConvert.DeserializeObject<List<Employee>>(employeeList); }
             else
             { return new List<Employee>(); }
-        }
-
-        private async Task<string> TryGetEmployeeList()
-        {
-            var employee = new Employee();
-            var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "GetEmployeeList");
-            employee.ParamDictionary = paramDictionary;
-            return await employee.GetEmployeeList();
         }
     }
 }

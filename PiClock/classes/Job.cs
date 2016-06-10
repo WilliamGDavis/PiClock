@@ -22,8 +22,8 @@ namespace PiClock.classes
             if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&
                 null != ParamDictionary)
             {
-                var wsCall = new WebServiceCall(Settings.ValidateSetting("UriPrefix"), ParamDictionary);
-                HttpResponseMessage httpResponse = await wsCall.POST_JsonToRpcServer();
+                var wsCall = new WebServiceCall(ParamDictionary);
+                HttpResponseMessage httpResponse = await wsCall.PostJsonToRpcServer();
                 return await httpResponse.Content.ReadAsStringAsync();
             }
             else

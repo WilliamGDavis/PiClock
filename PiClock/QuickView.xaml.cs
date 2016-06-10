@@ -44,22 +44,18 @@ namespace PiClock
         {
             int selectedIndex = listView_Employees.SelectedIndex;
             var name = (ListViewItem)listView_Employees.Items[selectedIndex];
-
-            var employee = new Employee();
-            var paramDictionary = new Dictionary<string, string>();
-            paramDictionary.Add("action", "CheckLoginStatus");
-            paramDictionary.Add("employeeId", name.Tag.ToString());
-            employee.ParamDictionary = paramDictionary;
-
-            bool isLoggedIn = ("true" == await employee.CheckLoginStatus()) ? true : false;
+            string employeeId = name.Tag.ToString();
+            bool isLoggedIn = await Employee.TryCheckLoginStatus(employeeId);
 
             Job currentJob = null;
             if (true == isLoggedIn)
             {
-                paramDictionary.Clear();
+                var paramDictionary = new Dictionary<string, string>()
+                {
+                    { "action", "GetCurrentJob" },
+                    { "employeeId", name.Tag.ToString() }
+                };
                 Job job = new Job();
-                paramDictionary.Add("action", "GetCurrentJob");
-                paramDictionary.Add("employeeId", name.Tag.ToString());
                 job.ParamDictionary = paramDictionary;
 
                 //Should return a JSON string or null (if there were errors)
@@ -73,16 +69,6 @@ namespace PiClock
                                                                                  name.Content.ToString(),
                                                                                  (true == isLoggedIn) ? "Yes (" + jobDescription + ")" : "No"
                                                                                  );
-        }
-
-        private async Task<Job> GetCurrentJob()
-        {
-            return new Job();
-        }
-
-        private async Task<string> TryGetCurrentJob()
-        {
-            return null;
         }
     }
 
