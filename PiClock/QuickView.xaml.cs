@@ -45,24 +45,26 @@ namespace PiClock
             int selectedIndex = listView_Employees.SelectedIndex;
             var name = (ListViewItem)listView_Employees.Items[selectedIndex];
             string employeeId = name.Tag.ToString();
-            bool isLoggedIn = await Employee.TryCheckLoginStatus(employeeId);
+            var httpResponse = await Employee.CheckPunchedInStatus(employeeId);
+            var result = (string)CommonMethods.Deserialize(typeof(string), await httpResponse.Content.ReadAsStringAsync());
+            bool isLoggedIn = ("true" == result) ? true : false;
 
             Job currentJob = null;
             if (true == isLoggedIn)
             {
-                var paramDictionary = new Dictionary<string, string>()
-                {
-                    { "action", "GetCurrentJob" },
-                    { "employeeId", name.Tag.ToString() }
-                };
-                Job job = new Job();
-                job.ParamDictionary = paramDictionary;
+                //var paramDictionary = new Dictionary<string, string>()
+                //{
+                //    { "action", "GetCurrentJob" },
+                //    { "employeeId", name.Tag.ToString() }
+                //};
+                //Job job = new Job();
+                //job.ParamDictionary = paramDictionary;
 
-                //Should return a JSON string or null (if there were errors)
-                string result = await job.GetCurrentJob();
+                ////Should return a JSON string or null (if there were errors)
+                //result = await Job.GetCurrentJob(employeeId);
 
-                if ("null" != result)
-                { currentJob = JsonConvert.DeserializeObject<Job>(result); }
+                //if ("null" != result)
+                //{ currentJob = JsonConvert.DeserializeObject<Job>(result); }
             }
             string jobDescription = (null != currentJob) ? currentJob.Description : "None";
             textBlock.Text = string.Format("ID: {0}\nName: {1}\nLogged In: {2}", name.Tag.ToString(),

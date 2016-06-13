@@ -14,22 +14,16 @@ namespace PiClock.classes
         public string active { get; set; }
         public Job CurrentJob { get; set; }
         public List<Job> JobList { get; set; }
-        public Dictionary<string, string> ParamDictionary { get; set; }
 
-        //Check the database to see if a user is logged in currently
-        public static async Task<bool> TryCheckLoginStatus(string employeeId)
+        //Check the database to see if a user is punched in currently
+        public static async Task<HttpResponseMessage> CheckPunchedInStatus(string employeeId)
         {
             var paramDictionary = new Dictionary<string, string>()
             {
                 { "action", "CheckLoginStatus" },
                 { "employeeId", employeeId }
             };
-            var wsCall = new WebServiceCall(paramDictionary);
-            var httpResponse = await wsCall.PostJsonToRpcServer();
-
-            //Should return true or false (will also return false if there was an error)
-            var result = JsonConvert.DeserializeObject<string>(await httpResponse.Content.ReadAsStringAsync());
-            return ("true" == result) ? true : false;
+            return await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
         }
 
         //Return a list of all employees in the database
@@ -39,8 +33,7 @@ namespace PiClock.classes
             {
                 { "action", "GetEmployeeList" }
             };
-            var wsCall = new WebServiceCall(paramDictionary);
-            return await wsCall.PostJsonToRpcServer();
+            return await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
         }
     }
 }

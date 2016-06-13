@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PiClock.classes
 {
-    class WebServiceCall
+    class WebServiceCall : IDisposable
     {
         //URI of the web service resource
         public string Uri { get; set; }
@@ -28,6 +28,10 @@ namespace PiClock.classes
             if (null == Uri || null == ParamDictionary)
             { return null; }
 
+            //Make sure the ParamDictionary has an action, used by the RPC server
+            if (!ParamDictionary.ContainsKey("action"))
+            { return null; }
+
             using (var HttpClient = new HttpClient())
             {
                 //Client headers
@@ -44,41 +48,40 @@ namespace PiClock.classes
             }
         }
 
-        //Connect to a web service and retrieve the data (JSON format) using the GET verb
-        public async Task<HttpResponseMessage> GET_JsonFromWebApi()
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
         {
-            if (null == Uri || null == ParamDictionary)
-            { return null; }
-
-            //TODO: Retrieve params passed in and build the URI
-
-            using (var HttpClient = new HttpClient())
-            { return await HttpClient.GetAsync(new Uri(Uri)); }
-        }
-
-
-
-        //Check for a valid connection to the Web Service using the PUT verb
-        //NOT currently used in the application.  POST is being used to make updates
-        public async Task<HttpResponseMessage> PUT_JsonToWebApi()
-        {
-            HttpResponseMessage httpResponse = null;
-            if (null != Uri && null != ParamDictionary)
+            if (!disposedValue)
             {
-                using (HttpClient httpClient = new HttpClient())
+                if (disposing)
                 {
-                    using (HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Put, new Uri(Uri)))
-                    {
-                        httpRequest.Content = new FormUrlEncodedContent(ParamDictionary);
-                        httpResponse = await httpClient.SendAsync(httpRequest);
-                    }
+                    // TODO: dispose managed state (managed objects).
                 }
-                return httpResponse;
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
             }
-            else
-            { return null; }
         }
 
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~WebServiceCall() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 
     class DbFunctions : WebServiceCall

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,16 +30,15 @@ namespace PiClock.classes
         }
 
         //Used to read a from a webservice that returns a JSON string
-        public static async Task<string> GetJsonFromRpcServer(Dictionary<string, string> paramDictionary)
+        public static async Task<HttpResponseMessage> GetHttpResponseFromRpcServer(Dictionary<string, string> paramDictionary)
         {
-            try
-            {
-                var wsCall = new WebServiceCall(paramDictionary);
-                HttpResponseMessage httpResponse = await wsCall.PostJsonToRpcServer();
-                return await httpResponse.Content.ReadAsStringAsync();
-            }
-            catch (HttpRequestException ex)
-            { return ex.Message; }
+            using (var wsCall = new WebServiceCall(paramDictionary))
+            { return await wsCall.PostJsonToRpcServer(); }
+        }
+
+        public static object Deserialize(Type type, string input)
+        {
+            return JsonConvert.DeserializeObject(input, type, new JsonSerializerSettings { Error = HandleDeserializationError });
         }
 
         public static string ValidateSimpleString(string stringToValidate = null, int minLength = 0, int maxLength = 0, bool allowNumerals = false)

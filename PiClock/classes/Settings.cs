@@ -66,7 +66,7 @@ namespace PiClock.classes
         //Try to parse the string value of PinLength to an int.  If it can't, return a 0 value
         public static int ConvertStringToInt(string settingValue)
         {
-            int value = (Int32.TryParse(settingValue, out value)) ? value : 0;
+            int value = (int.TryParse(settingValue, out value)) ? value : 0;
             return value;
         }
     }

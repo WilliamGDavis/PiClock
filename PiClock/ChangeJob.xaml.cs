@@ -34,7 +34,7 @@ namespace PiClock
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
         { Frame.Navigate(typeof(MainPage), null); }
 
-        //Keypad Events
+        #region Keypad Events
         private void btn_1_Click(object sender, RoutedEventArgs e)
         { textBox_NewJob.Text += btn_1.Content; }
         private void btn_2_Click(object sender, RoutedEventArgs e)
@@ -55,6 +55,7 @@ namespace PiClock
         { textBox_NewJob.Text += btn_9.Content; }
         private void btn_0_Click(object sender, RoutedEventArgs e)
         { textBox_NewJob.Text += btn_0.Content; }
+        #endregion
 
         private async void button_ChangeJob_Click(object sender, RoutedEventArgs e)
         {
@@ -70,8 +71,8 @@ namespace PiClock
             string jobDescription = textBox_NewJob.Text;
             string newJobId = await Punch.JobLookup(jobDescription);
 
-            //Check to make sure that the new job exists in the database
-            if ("false" == newJobId)
+            //Check to make sure that the new job exists in the database and that a deserialization error did not occur
+            if ("" == newJobId || null == newJobId)
             {
                 textBlock.Text = "Job Number does not exist!";
                 textBox_NewJob.Text = "";
@@ -79,7 +80,7 @@ namespace PiClock
             }
 
             //Punch into the new job (and punch out of the old job)
-            await Punch.PunchIntoNewJob(this.Employee, newJobId);
+            await Punch.PunchIntoJob(Employee, newJobId);
             Frame.Navigate(typeof(MainPage), null);
         }
     }

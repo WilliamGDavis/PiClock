@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -36,7 +35,7 @@ namespace PiClock
         private void Page_Loaded(object sender, RoutedEventArgs e)
         { textBlock_CurrentTime.Text = Format_dt_Current(DateTime.Now); }
 
-        //Keypad Events
+        #region KeyPad Buttons
         private void btn_0_Click(object sender, RoutedEventArgs e)
         { CurrentPin += btn_0.Content; }
         private void btn_1_Click(object sender, RoutedEventArgs e)
@@ -57,8 +56,9 @@ namespace PiClock
         { CurrentPin += btn_8.Content; }
         private void btn_9_Click(object sender, RoutedEventArgs e)
         { CurrentPin += btn_9.Content; }
-        
-        //Quick Peek Button Event
+        #endregion
+
+        #region Button Events
         private async void button_QuickPeek_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -74,6 +74,7 @@ namespace PiClock
             catch (Exception ex)
             { textBlock_Result.Text = ex.Message; }
         }
+        #endregion
 
         public void DispatcherTimerSetup()
         {
@@ -103,13 +104,13 @@ namespace PiClock
         private async void Login()
         {
             var employee = new Employee();
-            var httpResponse = await Authentication.TryLogin(CurrentPin);
+            var httpResponse = await Authentication.TryLogin(CurrentPin); //If a PIN is not in the database, the TryLogin() will return an empty array
+            string result = await httpResponse.Content.ReadAsStringAsync();
 
             try
             {
-                string result = await httpResponse.Content.ReadAsStringAsync();
-                //If a PIN is not in the database, the TryLogin() will return an empty array
-                employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
+                employee = (Employee)CommonMethods.Deserialize(typeof(Employee), result);
+                //employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
             }
             catch (HttpRequestException)
             { return; }
@@ -132,9 +133,12 @@ namespace PiClock
         {
             var httpResponse = await Employee.TryGetEmployeeList();
             string employeeList = await httpResponse.Content.ReadAsStringAsync();
+
             if ("Cannot connect to database" != employeeList &&
-                "[]" != employeeList) //Bad connection or an empty strin array returned from web service
-            { return JsonConvert.DeserializeObject<List<Employee>>(employeeList); }
+                "[]" != employeeList) //Bad connection or an empty string array returned from web service
+            {
+                return (List<Employee>)CommonMethods.Deserialize(typeof(List<Employee>), employeeList);
+            }
             else
             { return new List<Employee>(); }
         }

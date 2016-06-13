@@ -16,18 +16,14 @@ namespace PiClock.classes
         public Employee Employee { get; set; }
         public Dictionary<string, string> ParamDictionary { get; set; }
 
-        public async Task<string> GetCurrentJob()
+        public static async Task<HttpResponseMessage> GetCurrentJob(string employeeId)
         {
-            string[] requiredParams = { "action", "employeeId" };
-            if (true == CommonMethods.CheckForRequiredParams(requiredParams, ParamDictionary) &&
-                null != ParamDictionary)
+            var paramDictionary = new Dictionary<string, string>()
             {
-                var wsCall = new WebServiceCall(ParamDictionary);
-                HttpResponseMessage httpResponse = await wsCall.PostJsonToRpcServer();
-                return await httpResponse.Content.ReadAsStringAsync();
-            }
-            else
-            { return null; }
+                { "action", "GetCurrentJob" },
+                { "employeeId", employeeId }
+            };
+            return await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
         }
     }
 }

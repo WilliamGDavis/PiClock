@@ -14,8 +14,7 @@ namespace PiClock.classes
                 { "action", "PinLogin" },
                 { "pin", pin }
             };
-            var wsCall = new WebServiceCall(paramDictionary);
-            return await wsCall.PostJsonToRpcServer();
+            return await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
         }
     }
 }

@@ -32,13 +32,11 @@ namespace PiClock
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var httpResponse = await Punch.GetTodaysPunches(Employee.id);
-            var todayPunches = JsonConvert.DeserializeObject<EmployeePunchesByDay>(await httpResponse.Content.ReadAsStringAsync());
+            var todayPunches = await Punch.GetTodaysPunches(Employee.id);
             if (null != todayPunches)
             { BuildWidgets_SingleDayPunches(todayPunches); }
-
-            httpResponse = await Punch.TryGetThisWeeksPunches(Employee.id);
-            var weeklyPunches = JsonConvert.DeserializeObject<EmployeePunchesByWeek>(await httpResponse.Content.ReadAsStringAsync());
+            
+            var weeklyPunches = await Punch.GetThisWeeksPunches(Employee.id);
             if (null != weeklyPunches)
             { BuildWeeklyWidgets(weeklyPunches); }
 
