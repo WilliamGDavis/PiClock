@@ -26,16 +26,20 @@ namespace PiClock
             ThisWeeksPunches = new List<Widget>();
             TotalHours = TimeSpan.Zero;
         }
-        
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         { Employee = e.Parameter as Employee; }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var todayPunches = await Punch.GetTodaysPunches(Employee.id);
+            //var todayPunches = await Punch.GetTodaysPunches(Employee.id);
+            //if (null != todayPunches)
+            //{ BuildWidgets_SingleDayPunches(todayPunches); }
+
+            var todayPunches = await Punch.GetRangePunches(Employee.id);
             if (null != todayPunches)
             { BuildWidgets_SingleDayPunches(todayPunches); }
-            
+
             var weeklyPunches = await Punch.GetThisWeeksPunches(Employee.id);
             if (null != weeklyPunches)
             { BuildWeeklyWidgets(weeklyPunches); }
@@ -44,7 +48,7 @@ namespace PiClock
             cvs2.Source = JobPunches;
             cvs3.Source = ThisWeeksPunches;
 
-            TotalHours += calculateOpenPunchDuration(weeklyPunches).Duration();
+            //TotalHours += calculateOpenPunchDuration(weeklyPunches).Duration();
 
             hubInfo.Header = string.Format("{0} {1}", Employee.fname, Employee.lname);
             hubSection_WeeklyTotal.Header = string.Format("Weekly Total: {0}:{1}:{2}", (int)TotalHours.TotalHours, TotalHours.Minutes, TotalHours.Seconds);
@@ -53,14 +57,14 @@ namespace PiClock
 
         private void BuildWeeklyWidgets(EmployeePunchesByWeek weeklyPunches = null)
         {
-            
-            foreach (var day in weeklyPunches.PairedPunches)
+
+            foreach (var day in weeklyPunches.WeekdayPunches)
             {
-                double durationInSeconds = day.RegularPunchesPaired[0].TotalDurationInSeconds.GetValueOrDefault(); //Set the durationInSeconds to 0 if a null value is checked against
+                double durationInSeconds = day.RegularPunches[0].TotalDurationInSeconds.GetValueOrDefault(); //Set the durationInSeconds to 0 if a null value is checked against
                 string backgroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "SteelBlue" : "LightGray";
                 string foregroundColor = (day.DayName == DateTime.Now.DayOfWeek.ToString()) ? "White" : "Black";
                 TotalHours += TimeSpan.FromSeconds(durationInSeconds);
-                
+
                 //TODO: Check to see if the user is currently punched in and add it to the total duration
                 if (0 == durationInSeconds)
                 {
@@ -91,10 +95,10 @@ namespace PiClock
 
         private void BuildWidgets_SingleDayPunches(EmployeePunchesByDay punches)
         {
-            BuildWidget_OpenRegularPunch(punches.RegularPunchesOpen);
-            BuildWidget_ClosedRegularPunch(punches.RegularPunchesPaired);
-            BuildWidget_OpenJobPunch(punches.JobPunchesOpen);
-            BuildWidget_ClosedJobPunch(punches.JobPunchesPaired);
+            //BuildWidget_OpenRegularPunch(punches.RegularPunchesOpen);
+            BuildWidget_ClosedRegularPunch(punches.RegularPunches);
+            //BuildWidget_OpenJobPunch(punches.JobPunchesOpen);
+            BuildWidget_ClosedJobPunch(punches.JobPunches);
         }
 
         private void BuildWidget_OpenRegularPunch(RegularPunchOpen regularPunchOpen)
@@ -116,24 +120,42 @@ namespace PiClock
             }
         }
 
-        private void BuildWidget_ClosedRegularPunch(RegularPunchesPaired regularPunchPaired)
+        private void BuildWidget_ClosedRegularPunch(RegularPunches regularPunchPaired)
         {
             foreach (var punch in regularPunchPaired.Punches)
             {
                 TimeSpan duration = TimeSpan.FromSeconds(punch.DurationInSeconds.GetValueOrDefault());
                 string stringDuration = new DateTime(duration.Ticks).ToString("HH:mm:ss");
-                string punchIn = punch.PunchIn.GetValueOrDefault().ToString("hh:mm tt");
-                string punchOut = punch.PunchOut.GetValueOrDefault().ToString("hh:mm tt");
+                DateTime punchIn = punch.PunchIn;
+                DateTime punchOut = punch.PunchOut.GetValueOrDefault();
 
-                RegularPunches.Add(new WidgetRegularPunchPaired
+                if (punchOut != DateTime.MinValue)
                 {
-                    Line1 = string.Format("{0}", DateTime.Now.ToString("dddd MM/dd")),
-                    Line2 = string.Format("{0} - {1}", punchIn, punchOut),
-                    Line3 = string.Format("Duration: {0}", stringDuration),
-                    BackgroundColor = "LightGray",
-                    TextColor = "Black"
-                });
-            
+                    RegularPunches.Add(new WidgetRegularPunch
+                    {
+                        Line1 = string.Format("Duration: {0}", stringDuration),
+                        Line2 = string.Format("in: {0}", punchIn.ToString("MM/dd hh:mm t")),
+                        Line3 = string.Format("out: {0}", punchOut.ToString("MM/dd hh:mm t")),
+                        BackgroundColor = "LightGray",
+                        TextColor = "Black"
+                    });
+                }
+                else
+                {
+                    //Determine the "current" duration from when the employee punched in
+                    TimeSpan currentDuration = DateTime.Now.Subtract(punchIn).Duration();
+                    string formattedDuration = string.Format("{0}:{1}:{2}", (int)currentDuration.TotalHours, currentDuration.Minutes, currentDuration.Seconds);
+                    stringDuration = new DateTime(currentDuration.Ticks).ToString(formattedDuration);
+                    RegularPunches.Add(new WidgetRegularPunch
+                    {
+                        Line1 = string.Format("Duration: {0}", stringDuration),
+                        Line2 = string.Format("in: {0}", punchIn.ToString("MM/dd hh:mm t")),
+                        BackgroundColor = "SteelBlue",
+                        TextColor = "White"
+                    });
+                }
+
+
             }
         }
 
@@ -156,41 +178,55 @@ namespace PiClock
             }
         }
 
-        private void BuildWidget_ClosedJobPunch(JobPunchesPaired jobPunchPaired)
+        private void BuildWidget_ClosedJobPunch(JobPunches jobPunchPaired)
         {
             foreach (var punch in jobPunchPaired.Punches)
             {
                 TimeSpan duration = TimeSpan.FromSeconds(punch.DurationInSeconds.GetValueOrDefault());
                 string stringDuration = new DateTime(duration.Ticks).ToString("HH:mm:ss");
-                string punchIn = punch.PunchIn.GetValueOrDefault().ToString("hh:mm tt");
-                string punchOut = punch.PunchOut.GetValueOrDefault().ToString("hh:mm tt");
+                DateTime punchIn = punch.PunchIn;
+                DateTime punchOut = punch.PunchOut.GetValueOrDefault();
 
-                JobPunches.Add(new WidgetJobPunchPaired
+                if (punchOut != DateTime.MinValue)
                 {
-                    Line1 = string.Format("{0}", punch.JobInformation.Description),
-                    Line2 = string.Format("{0} - {1}", punchIn, punchOut),
-                    Line3 = string.Format("Duration: {0}", stringDuration),
-                    BackgroundColor = "LightGray",
-                    TextColor = "Black"
-                });
+                    JobPunches.Add(new WidgetJobPunch
+                    {
+                        Line1 = string.Format("{0}", punch.JobInformation.Description),
+                        Line2 = string.Format("in: {0}", punchIn.ToString("MM/dd hh:mm t")),
+                        Line3 = string.Format("out: {0}", punchOut.ToString("MM/dd hh:mm t")),
+                        BackgroundColor = "LightGray",
+                        TextColor = "Black"
+                    });
+                }
+                else
+                {
+                    JobPunches.Add(new WidgetJobPunch
+                    {
+                        Line1 = string.Format("{0}", punch.JobInformation.Description),
+                        Line2 = string.Format("Punch In: {0}", punchIn.ToString("MM/dd hh:mm t")),
+                        BackgroundColor = "SteelBlue",
+                        TextColor = "White"
+                    });
+                }
+
             }
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         { Frame.Navigate(typeof(EmployeePage), Employee); }
 
-        private TimeSpan calculateOpenPunchDuration(EmployeePunchesByWeek weeklyPunches = null)
-        {
-            //Make sure there was a weeklyPunches object passed in
-            if (null == weeklyPunches)
-            { return TimeSpan.Zero; }
+        //private TimeSpan calculateOpenPunchDuration(EmployeePunchesByWeek weeklyPunches = null)
+        //{
+        //    //Make sure there was a weeklyPunches object passed in
+        //    if (null == weeklyPunches)
+        //    { return TimeSpan.Zero; }
 
-            //If DateTime has a default value (usually when there is not an open punch)
-            if (DateTime.MinValue == weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault())
-            { return TimeSpan.Zero; }
+        //    //If DateTime has a default value (usually when there is not an open punch)
+        //    if (DateTime.MinValue == weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault())
+        //    { return TimeSpan.Zero; }
 
-            //Return the current time minus the time punched in as a TimeSpan
-            return DateTime.Now.Subtract(weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault()).Duration();
-        }
+        //    //Return the current time minus the time punched in as a TimeSpan
+        //    return DateTime.Now.Subtract(weeklyPunches.OpenPunches.RegularPunchesOpen.PunchIn.GetValueOrDefault()).Duration();
+        //}
     }
 }

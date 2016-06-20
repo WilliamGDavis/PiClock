@@ -76,6 +76,7 @@ namespace PiClock
             //Used as a "Loading" placeholder
             textBlock_ConnectionStatus.Text = "Checking Connection...";
 
+            
             //Check for an valid connection to the database
             if (!true == await TryCheckDbConnection())
             {
@@ -119,21 +120,24 @@ namespace PiClock
         {
 
             //TODO: Check for valid values in the textboxes
-            string uriPrefix = string.Format("http://{0}{1}:{2}/{3}", CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
-                                                                     (true == checkBox_UseSsl.IsChecked) ? "s" : "",
+            string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", (true == checkBox_UseSsl.IsChecked) ? "s" : "",
+                                                                     CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
                                                                      CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true),
                                                                      CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true));
 
             try
             {
-                var paramDictionary = new Dictionary<string, string>();
-                paramDictionary.Add("action", "test_connection");
-                paramDictionary.Add("ApiUsername", CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true));
-                paramDictionary.Add("ApiPassword", CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true));
+                var paramDictionary = new Dictionary<string, string>()
+                {
+                    { "action", "test_connection" },
+                    { "ApiUsername", CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true) },
+                    { "ApiPassword", CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true) }
+                };
                 var dbCall = new DbFunctions(uriPrefix, paramDictionary);
 
                 var httpResponse = await dbCall.CheckDBConnection();
-                string result = JsonConvert.DeserializeObject<string>(await httpResponse.Content.ReadAsStringAsync());
+                var httpContent = await httpResponse.Content.ReadAsStringAsync();
+                string result = (string)CommonMethods.Deserialize(typeof(string), httpContent);
                 return ("true" == result) ? true : false;
             }
             catch (Exception ex)
@@ -152,9 +156,9 @@ namespace PiClock
                 string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
                 string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
                 string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", useSsl,
-                                                                                    apiServerAddress,
-                                                                                    apiServerPort,
-                                                                                    apiDirectory);
+                                                                          apiServerAddress,
+                                                                          apiServerPort,
+                                                                          apiDirectory);
 
                 var paramDictionary = new Dictionary<string, string>();
                 paramDictionary.Add("action", "GetSettings");

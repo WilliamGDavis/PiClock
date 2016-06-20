@@ -19,7 +19,7 @@ namespace PiClock.classes
         public static string UseSsl { get; set; }
         public static string AllowPunchIntoJobWhenPunchingIn { get; set; }
     }
-
+    
     static class Settings
     {
         public static Dictionary<string, string> ParamDictionary { get; set; } //Dictionary of all the application settings, set application-side

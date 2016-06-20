@@ -16,7 +16,7 @@
         //public string Type { get; set; }
     }
 
-    class WidgetRegularPunchPaired : Widget
+    class WidgetRegularPunch : Widget
     {
         public string TimeStampIn { get; set; }
         public string TimeStampOut { get; set; }
@@ -32,7 +32,7 @@
     {
     }
 
-    class WidgetJobPunchPaired : Widget
+    class WidgetJobPunch : Widget
     {
     }
 }

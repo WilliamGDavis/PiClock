@@ -16,7 +16,6 @@ namespace PiClock
         public EmployeePage()
         { InitializeComponent(); }
 
-        //Retrieve the data from the previous parent page
         protected override void OnNavigatedTo(NavigationEventArgs e)
         { Employee = e.Parameter as Employee; }
 
@@ -24,7 +23,7 @@ namespace PiClock
         {
             await CheckLoginStatus();
             ShowOrHideButtons();
-            textBlock.Text = string.Format("Welcome, {0} {1}", Employee.fname, Employee.lname);
+            textBlock.Text = string.Format("Welcome, {0} {1}!", Employee.fname, Employee.lname);
             if (true == LoggedIn)
             {
                 //This should return a JSON string ("null" or an array) or a null
@@ -43,15 +42,23 @@ namespace PiClock
             { textBlock_CurrentPunch.Text = "Not Punched In"; }
         }
 
-        #region Buttons
+ 
         private void button_Back_Click(object sender, RoutedEventArgs e)
         { Frame.Navigate(typeof(MainPage), null); }
 
-        //Check to see if a user is currently logged in
+        /**
+        <summary>
+            Check to see if an employee is currently punched in (Regular Punch)
+        </summary>
+        <return>
+            bool
+        </return>
+        */
         private async Task CheckLoginStatus()
         {
             var httpResponse = await Employee.CheckPunchedInStatus(Employee.id);
-            var result = (string)CommonMethods.Deserialize(typeof(string), await httpResponse.Content.ReadAsStringAsync());
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+            var result = (string)CommonMethods.Deserialize(typeof(string), httpContent);
             LoggedIn = ("true" == result) ? true : false;
         }
 
@@ -98,14 +105,20 @@ namespace PiClock
 
         private void button_ViewInfo_Click(object sender, RoutedEventArgs e)
         { Frame.Navigate(typeof(Employee_Info), Employee); }
-
-        #endregion
-
-        //Check to see if a user is currently logged into a job, and parse it into a JSON string if they are
+        
+        /**
+        <summary>
+            Check to see if an employee is currently punched into a job (Job Punch)
+        </summary>
+        <returns>
+            string "true" or "false"
+        </returns>
+        */
         private async Task<string> TryGetCurrentJob()
         {
             var httpResponse = await Job.GetCurrentJob(Employee.id.ToString());
-            return await httpResponse.Content.ReadAsStringAsync();
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+            return httpContent;
         }
 
         private void ShowOrHideButtons()

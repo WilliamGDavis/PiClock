@@ -13,8 +13,6 @@ namespace PiClock.classes
         public string Description { get; set; }
         public string Code { get; set; }
         public string Active { get; set; }
-        public Employee Employee { get; set; }
-        public Dictionary<string, string> ParamDictionary { get; set; }
 
         public static async Task<HttpResponseMessage> GetCurrentJob(string employeeId)
         {

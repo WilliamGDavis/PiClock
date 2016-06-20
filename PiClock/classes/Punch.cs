@@ -71,9 +71,10 @@ namespace PiClock.classes
             };
             
             var httpResponse = await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
-            var httpContent = (string)CommonMethods.Deserialize(typeof(string), await httpResponse.Content.ReadAsStringAsync());
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+            string punchIn = (string)CommonMethods.Deserialize(typeof(string), httpContent);
 
-            return ("true" == httpContent) ? true : false;
+            return ("true" == punchIn) ? true : false;
         }
 
         /**
@@ -89,7 +90,6 @@ namespace PiClock.classes
         */
         public static async Task<bool> PunchOut(string employeeId, string currentJobId)
         {
-            var punch = new Punch();
             var paramDictionary = new Dictionary<string, string>()
             {
                 { "action", "PunchOut" },
@@ -98,9 +98,10 @@ namespace PiClock.classes
             };
 
             var httpResponse = await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
-            var httpContent = (string)CommonMethods.Deserialize(typeof(string), await httpResponse.Content.ReadAsStringAsync());
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+            var punchOut = (string)CommonMethods.Deserialize(typeof(string), httpContent);
 
-            return ("true" == httpContent) ? true : false;
+            return ("true" == punchOut) ? true : false;
         }
 
         /**
@@ -117,6 +118,29 @@ namespace PiClock.classes
             var paramDictionary = new Dictionary<string, string>()
             {
                 { "action", "GetSingleDayPunchesByEmployeeId" },
+                { "employeeId", employeeId }
+            };
+
+            var httpResponse = await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+
+            return (EmployeePunchesByDay)CommonMethods.Deserialize(typeof(EmployeePunchesByDay), httpContent);
+        }
+
+        /**
+        <summary>
+            Return an employee's punches for a given range (Currently set for "beginning of the week and end of the week" only)
+        </summary>
+        <returns>
+            array
+            null (If deserialization error)
+        </returns>
+        */
+        public static async Task<EmployeePunchesByDay> GetRangePunches(string employeeId)
+        {
+            var paramDictionary = new Dictionary<string, string>()
+            {
+                { "action", "GetRangePunchesByEmployeeId" },
                 { "employeeId", employeeId }
             };
 
@@ -152,25 +176,26 @@ namespace PiClock.classes
 
     public class EmployeePunchesByDay
     {
-        public RegularPunchOpen RegularPunchesOpen { get; set; }
-        public JobPunchOpen JobPunchesOpen { get; set; }
-        public RegularPunchesPaired RegularPunchesPaired { get; set; }
-        public JobPunchesPaired JobPunchesPaired { get; set; }
+        //public RegularPunchOpen RegularPunchesOpen { get; set; }
+        //public JobPunchOpen JobPunchesOpen { get; set; }
+        public RegularPunches RegularPunches { get; set; }
+        public JobPunches JobPunches { get; set; }
 
     }
 
     public class EmployeePunchesByWeek
     {
-        public List<PairedPunches> PairedPunches { get; set; }
-        public OpenPunches OpenPunches { get; set; }
+        public List<WeekdayPunch> WeekdayPunches { get; set; }
+        //public List<PairedPunches> PairedPunches { get; set; }
+        //public OpenPunches OpenPunches { get; set; }
     }
 
     public class PairedPunches
     {
         public DateTime? Date { get; set; }
         public string DayName { get; set; }
-        public List<RegularPunchesPaired> RegularPunchesPaired { get; set; }
-        public List<JobPunchesPaired> JobPunchesPaired { get; set; }
+        public List<RegularPunches> RegularPunchesPaired { get; set; }
+        public List<JobPunches> JobPunchesPaired { get; set; }
     }
 
     public class OpenPunches
@@ -181,21 +206,20 @@ namespace PiClock.classes
 
     public class WeekdayPunch
     {
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
         public string DayName { get; set; }
-        public List<RegularPunchesPaired> RegularPunchesPaired { get; set; }
-        public List<JobPunchesPaired> JobPunchesPaired { get; set; }
-        public List<RegularPunchOpen> RegularPunchesOpen { get; set; }
-        public List<JobPunchOpen> JobPunchesOpen { get; set; }
+        public List<RegularPunches> RegularPunches { get; set; }
+        public List<JobPunches> JobPunches { get; set; }
+        //public List<RegularPunchOpen> RegularPunchesOpen { get; set; }
+        //public List<JobPunchOpen> JobPunchesOpen { get; set; }
     }
 
-    public class PairedPunch
+    public class RegularPunch
     {
-        public string ParentId { get; set; }
-        public string ChildId { get; set; }
-        public DateTime? PunchIn { get; set; }
-        public DateTime? PunchOut { get; set; }
-        public double? DurationInSeconds { get; set; }
+        public string Id { get; set; }
+        public DateTime PunchIn { get; set; }
+        public DateTime? PunchOut { get; set; } //Will sometimes be an empty string, if an employee is currently punched in
+        public double? DurationInSeconds { get; set; } //Will sometimes be an empty string, if an employee is currently punched in
     }
 
     public class OpenPunch
@@ -205,22 +229,22 @@ namespace PiClock.classes
         public DateTime? PunchIn { get; set; }
     }
 
-    public class RegularPunchesPaired
+    public class RegularPunches
     {
         public double? TotalDurationInSeconds { get; set; }
-        public List<PairedPunch> Punches { get; set; }
+        public List<RegularPunch> Punches { get; set; }
     }
 
-    public class JobPunchesPaired
+    public class JobPunches
     {
         public double? TotalDurationInSeconds { get; set; }
         public List<JobPunch> Punches { get; set; }
     }
 
-    public class RegularPunch : PairedPunch { } //Not Used
+    //public class RegularPunch : PairedPunch { } //Not Used
     public class RegularPunchOpen : OpenPunch { }
 
-    public class JobPunch : PairedPunch
+    public class JobPunch : RegularPunch
     { public JobInformation JobInformation { get; set; } }
 
     public class JobPunchOpen : OpenPunch

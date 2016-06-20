@@ -105,11 +105,11 @@ namespace PiClock
         {
             var employee = new Employee();
             var httpResponse = await Authentication.TryLogin(CurrentPin); //If a PIN is not in the database, the TryLogin() will return an empty array
-            string result = await httpResponse.Content.ReadAsStringAsync();
+            string httpContent = await httpResponse.Content.ReadAsStringAsync();
 
             try
             {
-                employee = (Employee)CommonMethods.Deserialize(typeof(Employee), result);
+                employee = (Employee)CommonMethods.Deserialize(typeof(Employee), httpContent);
                 //employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
             }
             catch (HttpRequestException)
@@ -136,9 +136,7 @@ namespace PiClock
 
             if ("Cannot connect to database" != employeeList &&
                 "[]" != employeeList) //Bad connection or an empty string array returned from web service
-            {
-                return (List<Employee>)CommonMethods.Deserialize(typeof(List<Employee>), employeeList);
-            }
+            { return (List<Employee>)CommonMethods.Deserialize(typeof(List<Employee>), employeeList); }
             else
             { return new List<Employee>(); }
         }

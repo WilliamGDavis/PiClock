@@ -37,9 +37,7 @@ namespace PiClock.classes
         }
 
         public static object Deserialize(Type type, string input)
-        {
-            return JsonConvert.DeserializeObject(input, type, new JsonSerializerSettings { Error = HandleDeserializationError });
-        }
+        { return JsonConvert.DeserializeObject(input, type, new JsonSerializerSettings { Error = HandleDeserializationError }); }
 
         public static string ValidateSimpleString(string stringToValidate = null, int minLength = 0, int maxLength = 0, bool allowNumerals = false)
         {

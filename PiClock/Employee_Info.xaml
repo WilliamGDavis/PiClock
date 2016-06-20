@@ -70,7 +70,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Hub Header="Will Davis" x:Name="hubInfo" Style="{Binding HubStyle1}" Padding="12,0">
-            <HubSection Header="Today's Punches" Width="200" Padding="12,0">
+            <HubSection Header="Punches" Width="200" Padding="12,0">
                 <DataTemplate>
                     <ListView x:Name="ListView1" SelectionMode="None" ItemsSource="{Binding Source={StaticResource cvs1}}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0">
                         <ListView.ItemTemplate>
@@ -78,8 +78,8 @@
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="200" Margin="0,5,0,0">
                                         <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="5,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
-                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
-                                        <TextBlock Text="{Binding Line3}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0" Padding="0,0,0,0" TextAlignment="Left"/>
+                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,60,0" Padding="0,0,0,0" TextAlignment="Right"/>
+                                        <TextBlock Text="{Binding Line3}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,60,0" Padding="0,0,0,0" TextAlignment="Right"/>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
@@ -87,16 +87,16 @@
                     </ListView>
                 </DataTemplate>
             </HubSection>
-            <HubSection Header="Today's Jobs" Width="200" Padding="12,0" UseLayoutRounding="False">
+            <HubSection Header="Jobs" Width="200" Padding="12,0" UseLayoutRounding="False">
                 <DataTemplate>
                     <ListView x:Name="ListView2" SelectionMode="None" ItemsSource="{Binding Source={StaticResource cvs2}}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <StackPanel Orientation="Vertical" Background="{Binding BackgroundColor}" Width="200" Margin="0,5,0,0">
-                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="5,0,0,0"/>
-                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0"/>
-                                        <TextBlock Text="{Binding Line3}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="15,0,0,0"/>
+                                        <TextBlock Text="{Binding Line1}" Foreground="{Binding TextColor}" FontSize="14" FontFamily="Segoe UI" Margin="5,0,0,0" TextAlignment="Left"/>
+                                        <TextBlock Text="{Binding Line2}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,60,0" TextAlignment="Right"/>
+                                        <TextBlock Text="{Binding Line3}" Foreground="{Binding TextColor}" FontSize="12" FontFamily="Segoe UI" Margin="0,0,60,0" TextAlignment="Right"/>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
