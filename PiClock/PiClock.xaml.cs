@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PiClock
@@ -36,6 +35,7 @@ namespace PiClock
         { textBlock_CurrentTime.Text = Format_dt_Current(DateTime.Now); }
 
         #region KeyPad Buttons
+        //Keypad functionality (Structured around Touch-based user input)
         private void btn_0_Click(object sender, RoutedEventArgs e)
         { CurrentPin += btn_0.Content; }
         private void btn_1_Click(object sender, RoutedEventArgs e)
@@ -58,24 +58,19 @@ namespace PiClock
         { CurrentPin += btn_9.Content; }
         #endregion
 
-        #region Button Events
+        //Get the list of employees from the database and navigate to the "QuickView" page
         private async void button_QuickPeek_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                List<Employee> employeeList = await GetEmployeeList();
+            var employeeList = await Employee.GetEmployeeList();
 
-                //Stop the timer (not needed for the following page)
-                DispatcherTimer.Stop();
+            //Stop the timer (not needed for the following page)
+            DispatcherTimer.Stop();
 
-                //Navigate to the next "QuickView" page and pass the employeeList object
-                Frame.Navigate(typeof(QuickView), employeeList);
-            }
-            catch (Exception ex)
-            { textBlock_Result.Text = ex.Message; }
+            //Navigate to the next "QuickView" page and pass the employeeList object
+            Frame.Navigate(typeof(QuickView), employeeList);
         }
-        #endregion
 
+        //Build a new DispatcherTimer to display the current datetime
         public void DispatcherTimerSetup()
         {
             //Create a new timer and assign the Tick event
@@ -89,32 +84,20 @@ namespace PiClock
             DispatcherTimer.Start();
         }
 
+        //Update the current datetime
         void DispatcherTimer_Tick(object sender, object e)
         { textBlock_CurrentTime.Text = Format_dt_Current(DateTime.Now); }
 
+        //Format the 'Main' current date/time into a user-friendly structure
+        //  Monday, June 20 2016
+        //      10:54:25AM
         private static string Format_dt_Current(DateTime dt)
-        {
-            //Format the 'Main' current date/time into a friendly structure
-            string newString = dt.ToString("dddd MMMM dd, yyyy");
-            newString += "\n";
-            newString += dt.ToString("hh:mm:sstt");
-            return newString;
-        }
+        { return dt.ToString("dddd MMMM dd, yyyy\nhh:mm:sstt"); }
 
+        //Login to an employee's page using a PIN
         private async void Login()
         {
-            var employee = new Employee();
-            var httpResponse = await Authentication.TryLogin(CurrentPin); //If a PIN is not in the database, the TryLogin() will return an empty array
-            string httpContent = await httpResponse.Content.ReadAsStringAsync();
-
-            try
-            {
-                employee = (Employee)CommonMethods.Deserialize(typeof(Employee), httpContent);
-                //employee = JsonConvert.DeserializeObject<Employee>(result, new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
-            }
-            catch (HttpRequestException)
-            { return; }
-
+            var employee = await Authentication.TryLogin(CurrentPin);
 
             if (null != employee)
             { //Successful Login
@@ -127,18 +110,6 @@ namespace PiClock
                 textBlock_Result.Text = "Incorrect Login";
                 return;
             }
-        }
-
-        private async Task<List<Employee>> GetEmployeeList()
-        {
-            var httpResponse = await Employee.TryGetEmployeeList();
-            string employeeList = await httpResponse.Content.ReadAsStringAsync();
-
-            if ("Cannot connect to database" != employeeList &&
-                "[]" != employeeList) //Bad connection or an empty string array returned from web service
-            { return (List<Employee>)CommonMethods.Deserialize(typeof(List<Employee>), employeeList); }
-            else
-            { return new List<Employee>(); }
         }
     }
 }

@@ -2,6 +2,7 @@
 using PiClock.classes;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
@@ -48,16 +49,15 @@ namespace PiClock
             textBlock_AllSettings.Text = "Saving settings...";
 
             //Check for a valid database connection before writing to local settings
-            if (!true == await TryCheckDbConnection())
+            if (false == await TryCheckDbConnection())
             {
                 IsEnabled = true;
                 textBlock_AllSettings.Text = "An Error Occured: Check database settings";
                 return;
             }
 
-            //Retrieve the settings from the database in a JSON string
-            //If the deserialization fails, populate an empty dbSettings object
-            var dbSettings = JsonConvert.DeserializeObject<List<DbSettings>>(await TryGetSettingsFromDb(), new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
+            //Retrieve the settings from the database
+            var dbSettings = await TryGetSettingsFromDb();
 
             //Erase all previous settings and write the new settings
             Settings.EraseAllSettings();
@@ -76,7 +76,7 @@ namespace PiClock
             //Used as a "Loading" placeholder
             textBlock_ConnectionStatus.Text = "Checking Connection...";
 
-            
+
             //Check for an valid connection to the database
             if (!true == await TryCheckDbConnection())
             {
@@ -100,15 +100,20 @@ namespace PiClock
             textBlock_AllSettings.Text = "Retrieving Settings from Database...";
 
             //Check for a valid connection to the database
-            if (!true == await TryCheckDbConnection())
+            if (false == await TryCheckDbConnection())
             {
                 IsEnabled = true;
                 textBlock_AllSettings.Text = "An Error Occured: Check database settings";
                 return;
             }
 
-            //Retrieve the settings from the database in a JSON string and parse them into a list of DbSettings
-            var dbSettings = JsonConvert.DeserializeObject<List<DbSettings>>(await TryGetSettingsFromDb(), new JsonSerializerSettings { Error = CommonMethods.HandleDeserializationError });
+            var dbSettings = await TryGetSettingsFromDb();
+            if (null == dbSettings)
+            {
+                IsEnabled = true;
+                textBlock_AllSettings.Text = "An Error Occured: Check database settings";
+                return;
+            }
 
             //Display the settings to the user
             textBlock_AllSettings.Text = BuildSettingsList(dbSettings);
@@ -118,57 +123,67 @@ namespace PiClock
         //Check for a vaild connection to the web service and database
         private async Task<bool> TryCheckDbConnection()
         {
+            string apiServerAddress = CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true);
+            string apiServerPort = CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true);
+            string apiDirectory = CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true);
+            string apiUsername = CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true);
+            string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
+            string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
+            string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", useSsl,
+                                                                      apiServerAddress,
+                                                                      apiServerPort,
+                                                                      apiDirectory);
 
-            //TODO: Check for valid values in the textboxes
-            string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", (true == checkBox_UseSsl.IsChecked) ? "s" : "",
-                                                                     CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true),
-                                                                     CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true),
-                                                                     CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true));
-
-            try
-            {
-                var paramDictionary = new Dictionary<string, string>()
+            var paramDictionary = new Dictionary<string, string>()
                 {
                     { "action", "test_connection" },
-                    { "ApiUsername", CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true) },
-                    { "ApiPassword", CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true) }
+                    { "ApiUsername", apiUsername },
+                    { "ApiPassword", apiPassword }
                 };
-                var dbCall = new DbFunctions(uriPrefix, paramDictionary);
-
-                var httpResponse = await dbCall.CheckDBConnection();
+            try
+            {
+                var httpResponse = await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary, uriPrefix);
                 var httpContent = await httpResponse.Content.ReadAsStringAsync();
-                string result = (string)CommonMethods.Deserialize(typeof(string), httpContent);
+                var result = (string)CommonMethods.Deserialize(typeof(string), httpContent);
                 return ("true" == result) ? true : false;
             }
-            catch (Exception ex)
-            { return false; }
+            catch (HttpRequestException ex)
+            {
+                var test = ex;
+                return false;
+            }
         }
 
         //Attempt to pull the database settings
-        private async Task<string> TryGetSettingsFromDb()
+        private async Task<List<DbSettings>> TryGetSettingsFromDb()
         {
+            string apiServerAddress = CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true);
+            string apiServerPort = CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true);
+            string apiDirectory = CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true);
+            string apiUsername = CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true);
+            string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
+            string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
+            string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", useSsl,
+                                                                      apiServerAddress,
+                                                                      apiServerPort,
+                                                                      apiDirectory);
+
+            var paramDictionary = new Dictionary<string, string>()
+                {
+                    { "action", "GetSettings" },
+                    { "ApiUsername", apiUsername },
+                    { "ApiPassword", apiPassword }
+                };
+
             try
             {
-                string apiServerAddress = CommonMethods.ValidateSimpleString(textBox_ApiServerAddress.Text, 1, 255, true);
-                string apiServerPort = CommonMethods.ValidateSimpleString(textBox_ApiServerPort.Text, 1, 5, true);
-                string apiDirectory = CommonMethods.ValidateSimpleString(textBox_ApiDirectory.Text, 0, 255, true);
-                string apiUsername = CommonMethods.ValidateSimpleString(textBox_ApiUsername.Text, 0, 255, true);
-                string apiPassword = CommonMethods.ValidateSimpleString(passwordBox_ApiPassword.Password, 0, 255, true);
-                string useSsl = (true == checkBox_UseSsl.IsChecked) ? "s" : "";
-                string uriPrefix = string.Format("http{0}://{1}:{2}/{3}", useSsl,
-                                                                          apiServerAddress,
-                                                                          apiServerPort,
-                                                                          apiDirectory);
-
-                var paramDictionary = new Dictionary<string, string>();
-                paramDictionary.Add("action", "GetSettings");
-                paramDictionary.Add("ApiUsername", apiUsername);
-                paramDictionary.Add("ApiPassword", apiPassword);
-                
-                return await SettingsFromDB.GetSettingsFromDb(uriPrefix, paramDictionary);
+                var httpResponse = await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary, uriPrefix);
+                var httpContent = await httpResponse.Content.ReadAsStringAsync();
+                var settingsList = (List<DbSettings>)CommonMethods.Deserialize(typeof(List<DbSettings>), httpContent);
+                return settingsList;
             }
-            catch (Exception ex)
-            { return ex.Message; }
+            catch (HttpRequestException ex)
+            { return null; }
         }
 
         //Write settings to local settings
@@ -183,7 +198,7 @@ namespace PiClock
             string allowPunchIntoJobWhenPunchingIn = (true == checkBox_AllowJobPunchWhenPunchingIn.IsChecked) ? "true" : "false";
 
             var paramDictionary = new Dictionary<string, string>();
-            
+
             paramDictionary.Add("ApiServerAddress", apiServerAddress);
             paramDictionary.Add("ApiServerPort", apiServerPort);
             paramDictionary.Add("ApiDirectory", apiDirectory);

@@ -22,6 +22,9 @@ namespace PiClock
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             //Populate the Employee ListView
+            if (null == EmployeeList)
+            { return; }
+
             foreach (Employee employee in EmployeeList)
             {
                 ListViewItem lvItem = new ListViewItem();

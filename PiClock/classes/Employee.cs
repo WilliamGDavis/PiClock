@@ -26,14 +26,26 @@ namespace PiClock.classes
             return await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
         }
 
-        //Return a list of all employees in the database
-        public static async Task<HttpResponseMessage> TryGetEmployeeList()
+        /**
+        <summary>
+            Return a list of all employess from the database
+        </summary>
+        <returns>
+            List<Employee> (if successful)
+            null (if unsuccessful)
+        </returns>
+        */
+        public static async Task<List<Employee>> GetEmployeeList()
         {
             var paramDictionary = new Dictionary<string, string>()
             {
                 { "action", "GetEmployeeList" }
             };
-            return await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
+
+            var httpResponse = await CommonMethods.GetHttpResponseFromRpcServer(paramDictionary);
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+            var employeeList = (List<Employee>)CommonMethods.Deserialize(typeof(List<Employee>), httpContent);
+            return employeeList;
         }
     }
 }

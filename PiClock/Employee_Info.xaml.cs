@@ -203,7 +203,7 @@ namespace PiClock
                     JobPunches.Add(new WidgetJobPunch
                     {
                         Line1 = string.Format("{0}", punch.JobInformation.Description),
-                        Line2 = string.Format("Punch In: {0}", punchIn.ToString("MM/dd hh:mm t")),
+                        Line2 = string.Format("in: {0}", punchIn.ToString("MM/dd hh:mm t")),
                         BackgroundColor = "SteelBlue",
                         TextColor = "White"
                     });

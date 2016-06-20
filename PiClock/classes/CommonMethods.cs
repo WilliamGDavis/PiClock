@@ -30,9 +30,9 @@ namespace PiClock.classes
         }
 
         //Used to read a from a webservice that returns a JSON string
-        public static async Task<HttpResponseMessage> GetHttpResponseFromRpcServer(Dictionary<string, string> paramDictionary)
+        public static async Task<HttpResponseMessage> GetHttpResponseFromRpcServer(Dictionary<string, string> paramDictionary, string uriPrefix = null)
         {
-            using (var wsCall = new WebServiceCall(paramDictionary))
+            using (var wsCall = new WebServiceCall(paramDictionary, uriPrefix))
             { return await wsCall.PostJsonToRpcServer(); }
         }
 

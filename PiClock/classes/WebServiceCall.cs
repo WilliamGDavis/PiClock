@@ -11,13 +11,15 @@ namespace PiClock.classes
     {
         //URI of the web service resource
         public string Uri { get; set; }
+        //Allow a user to pass in a Uri (currently used for the Configuration
+        public string CustomUri { get; set; }
         //Dictionary of paramaters to pass to the web service
         public Dictionary<string, string> ParamDictionary { get; set; }
 
-        //Optionally pass in the uri and paramDictionary
-        public WebServiceCall(Dictionary<string, string> paramDictionary = null)
+        //Allow a user to optionally pass in the uri, but set it to the current settings value if there isn't one passed in
+        public WebServiceCall(Dictionary<string, string> paramDictionary = null, string uri = null)
         {
-            Uri = Settings.Read("UriPrefix");
+            Uri = (uri == null) ? Settings.Read("UriPrefix") : uri;
             ParamDictionary = paramDictionary;
         }
 
@@ -93,6 +95,7 @@ namespace PiClock.classes
             Uri = uri;
             ParamDictionary = paramDictionary;
         }
+
         public async Task<HttpResponseMessage> CheckDBConnection()
         {
             //Return a null if the URI or the ParamDictionary is empty(null)
