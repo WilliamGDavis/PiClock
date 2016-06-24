@@ -1,0 +1,54 @@
+﻿<Page x:ConnectionId='1'
+    x:Class="PiClock.ChangeJob"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PiClock"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+                        >
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*">
+
+            </ColumnDefinition>
+            <ColumnDefinition Width="1*">
+
+            </ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid HorizontalAlignment="Stretch" Height="301" Margin="10,65.5" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Button x:ConnectionId='7' Grid.Column="0" Grid.Row="0" x:Name="btn_1" Content="1" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='8' Grid.Column="1" Grid.Row="0" x:Name="btn_2" Content="2" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='9' Grid.Column="2" Grid.Row="0" x:Name="btn_3" Content="3" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='10' Grid.Column="0" Grid.Row="1" x:Name="btn_4" Content="4" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='11' Grid.Column="1" Grid.Row="1" x:Name="btn_5" Content="5" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='12' Grid.Column="2" Grid.Row="1" x:Name="btn_6" Content="6" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='13' Grid.Column="0" Grid.Row="2" x:Name="btn_7" Content="7" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='14' Grid.Column="1" Grid.Row="2" x:Name="btn_8" Content="8" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='15' Grid.Column="2" Grid.Row="2" x:Name="btn_9" Content="9" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+                <Button x:ConnectionId='16' Grid.Column="1" Grid.Row="3" x:Name="btn_0" Content="0" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch"                     FontFamily="Calibri Light" FontSize="48"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Column="1">
+            <TextBox x:ConnectionId='2' x:Name="textBox_CurrentJob" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,200" Width="140" Header="Current Job"/>
+            <TextBox x:ConnectionId='3' x:Name="textBox_NewJob" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,0,0" Width="140" Header="New Job"/>
+            <Button x:ConnectionId='4' x:Name="button_Cancel" Content="Cancel" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="120"                            />
+            <Button x:ConnectionId='5' x:Name="button_ChangeJob" Content="Change Job" HorizontalAlignment="Center" Margin="250,0,0,10" VerticalAlignment="Bottom" Width="120"                               />
+            <TextBlock x:ConnectionId='6' x:Name="textBlock" HorizontalAlignment="Left" Margin="87,304,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="211"/>
+        </Grid>
+    </Grid>
+</Page>
+

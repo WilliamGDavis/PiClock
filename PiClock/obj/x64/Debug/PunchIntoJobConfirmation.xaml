@@ -1,0 +1,16 @@
+﻿<Page
+    x:Class="PiClock.PunchIntoJobConfirmation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PiClock"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <TextBlock x:ConnectionId='1' x:Name="textBlock" HorizontalAlignment="Center" Margin="0,50,0,0" TextWrapping="Wrap" Text="Do you want to punch into a job?" VerticalAlignment="Top" Height="53" Width="430" TextAlignment="Center" FontSize="22"/>
+        <Button x:ConnectionId='2' x:Name="button_Yes" Content="Yes" HorizontalAlignment="Center" Margin="0,100,400,0" VerticalAlignment="Center" Height="58" Width="202" FontSize="20"                         />
+        <Button x:ConnectionId='3' x:Name="button_No" Content="No" HorizontalAlignment="Center" Margin="400,100,0,0" VerticalAlignment="Center" Height="58" Width="202" FontSize="20"                        />
+    </Grid>
+</Page>
+

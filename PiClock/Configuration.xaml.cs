@@ -148,10 +148,7 @@ namespace PiClock
                 return ("true" == result) ? true : false;
             }
             catch (HttpRequestException ex)
-            {
-                var test = ex;
-                return false;
-            }
+            { return false; }
         }
 
         //Attempt to pull the database settings
